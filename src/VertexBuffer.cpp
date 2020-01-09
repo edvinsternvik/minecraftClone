@@ -27,7 +27,17 @@ void VertexBuffer::unbind() {
 
 void VertexBuffer::setData(const float* verticies, int verticiesCount) {
 	bind();
-	glBufferData(GL_ARRAY_BUFFER, verticiesCount * m_attributesStride * sizeof(float), verticies, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, verticiesCount * m_attributesStride * sizeof(float), verticies, GL_STREAM_DRAW);
+}
+
+void VertexBuffer::setDataSize(int verticiesCount) {
+	bind();
+	glBufferData(GL_ARRAY_BUFFER, verticiesCount * m_attributesStride * sizeof(float), NULL, GL_STREAM_DRAW);
+}
+
+void VertexBuffer::setSubData(const float* verticies, int verticiesCount, int vertexOffset) {
+	bind();
+	glBufferSubData(GL_ARRAY_BUFFER, vertexOffset * m_attributesStride * sizeof(float), verticiesCount * m_attributesStride * sizeof(float), verticies);
 }
 
 void VertexBuffer::init(const int attributes[], int attributesCount) {

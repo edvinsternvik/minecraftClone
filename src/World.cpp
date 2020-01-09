@@ -68,7 +68,6 @@ void World::changeBlock(int x, int y, int z, BlockId blockId) {
 	if(chunk == nullptr) {
 		return;
 	}
-		// std::cout << "a" << std::endl;
 
 	int chunkX = x % CHUNK_WIDTH, chunkZ = z % CHUNK_WIDTH;
 	if(chunkX < 0) chunkX = 16 - std::abs(chunkX);
@@ -77,19 +76,19 @@ void World::changeBlock(int x, int y, int z, BlockId blockId) {
 
 	if(chunkX == 0) {
 		Chunk* otherChunk = getChunk(x - 1, z);
-		if(otherChunk) otherChunk->generateChunkMesh();
+		if(otherChunk) otherChunk->updateChunkMesh(x, y, z);
 	}
 	if(chunkX == CHUNK_WIDTH - 1) {
 		Chunk* otherChunk = getChunk(x + 1, z);
-		if(otherChunk) otherChunk->generateChunkMesh();
+		if(otherChunk) otherChunk->updateChunkMesh(x, y, z);
 	}
 	if(chunkZ == 0) {
 		Chunk* otherChunk = getChunk(x, z - 1);
-		if(otherChunk) otherChunk->generateChunkMesh();
+		if(otherChunk) otherChunk->updateChunkMesh(x, y, z);
 	}
 	if(chunkZ == CHUNK_WIDTH - 1) {
 		Chunk* otherChunk = getChunk(x, z + 1);
-		if(otherChunk) otherChunk->generateChunkMesh();
+		if(otherChunk) otherChunk->updateChunkMesh(x, y, z);
 	}
 }
 
