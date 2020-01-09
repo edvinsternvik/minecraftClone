@@ -25,6 +25,7 @@ void Application::init() {
 
 	Camera* camera = world->createGameObject<Camera>();
 	renderer->setCamera(camera);
+    world->setPlayer(camera);
 }
 
 

@@ -2,7 +2,7 @@
 #include "GameObject.h"
 #include "Camera.h"
 
-World::World() {
+World::World() : m_player(nullptr) {
 
 }
 
@@ -45,6 +45,12 @@ void World::update() {
 	}
 
 	// Create chunks
+	generateChunksAroundPlayer(1);
+	deleteChunksNotAroundPlayer(1);
+}
+
+void World::setPlayer(GameObject* player) {
+	m_player = player;
 }
 
 const Block* const World::getBlock(int x, int y, int z) {
@@ -100,7 +106,7 @@ bool World::isSolid(int x, int y, int z) {
 	return chunk->isSolid(chunkX, y, chunkZ);
 } 
 
-void World::createChunk(int x, int y) {
+Chunk* World::createChunk(int x, int y) {
 	Chunk* newChunk = new Chunk(x, y);
 
 	if(chunks != nullptr) {
@@ -108,6 +114,7 @@ void World::createChunk(int x, int y) {
 	}
 
 	chunks = newChunk;
+	return newChunk;
 }
 
 void World::deleteChunk(int x, int y) {
@@ -143,4 +150,49 @@ Chunk* World::getChunk(int worldX, int worldZ) {
 	}
 	
 	return nullptr;
+}
+
+void World::generateChunksAroundPlayer(int maxChunksPerFrame) {
+	int chunksGenerated = 0;
+	int playerChunkX = std::floor(m_player->getPosition().x / (float)CHUNK_WIDTH);
+	int playerChunkZ = std::floor(m_player->getPosition().z / (float)CHUNK_WIDTH); 
+	for(int dist = 0; dist < renderDistance; ++dist) {
+		for(int x = -dist; x <= dist; ++x) {
+			for(int y = -dist; y <= dist; ++y) {
+				int chunkX = x + playerChunkX, chunkZ = y + playerChunkZ;
+				bool chunkExists = false;
+				Chunk* tail = chunks;
+				while(tail != nullptr) {
+					if(tail->chunkX == chunkX && tail->chunkZ == chunkZ) {
+						chunkExists = true;
+						break;
+					}
+
+					tail = tail->next;
+				}
+
+				if(!chunkExists) {
+					Chunk* newChunk = createChunk(chunkX, chunkZ);
+					newChunk->generateChunkMesh();
+					if(++chunksGenerated >= maxChunksPerFrame) return;
+				}
+			}
+		}
+	}
+}
+
+void World::deleteChunksNotAroundPlayer(int maxChunksPerFrame) {
+	int playerChunkX = std::floor(m_player->getPosition().x / (float)CHUNK_WIDTH);
+	int playerChunkZ = std::floor(m_player->getPosition().z / (float)CHUNK_WIDTH); 
+	int deletedChunks = 0;
+	
+	Chunk* tail = chunks;
+	while(tail != nullptr) {
+		int chunkX = playerChunkX - tail->chunkX, chunkZ = playerChunkZ - tail->chunkZ;
+		if(std::abs(chunkX) > renderDistance || std::abs(chunkZ) > renderDistance) {
+			deleteChunk(tail->chunkX, tail->chunkZ);
+			if(++deletedChunks >= maxChunksPerFrame) return;
+		}
+		tail = tail->next;
+	}
 }
