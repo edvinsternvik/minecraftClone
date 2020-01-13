@@ -64,22 +64,25 @@ void Renderer::render(World* world) {
 	// std::cout << "---------------------------------" << std::endl;
 	while(chunk) {
 
-		chunkVertexBuffer->setDataSize(chunk->getChunkMeshVerticiesCount());
-		// std::cout << chunk->getChunkMeshVerticiesCount() << std::endl;
-		int offset = 0;
-		for(int i = 0; i < CHUNK_SEGMENTS; ++i) {
-			int vertexCount = chunk->getChunkSegmentMeshVerticiesCount(i);
-			chunkVertexBuffer->setSubData(chunk->getChunkSegmentData(i), vertexCount, offset);
-			offset += vertexCount;
+		if(chunk->getChunkMeshVerticiesCount() > 0) {	
+
+			chunkVertexBuffer->setDataSize(chunk->getChunkMeshVerticiesCount());
+			// std::cout << chunk->getChunkMeshVerticiesCount() << std::endl;
+			int offset = 0;
+			for(int i = 0; i < CHUNK_SEGMENTS; ++i) {
+				int vertexCount = chunk->getChunkSegmentMeshVerticiesCount(i);
+				chunkVertexBuffer->setSubData(chunk->getChunkSegmentData(i), vertexCount, offset);
+				offset += vertexCount;
+			}
+			// // chunkVertexBuffer->setData(chunk->getChunkMeshData(), chunk->getChunkMeshVerticiesCount());
+			// // setSubData?
+			// // separate vbo for each chunk?
+
+			// chunk->getVbo()->bind();
+
+			glDrawArrays(GL_TRIANGLES, 0, chunk->getChunkMeshVerticiesCount());
+			// std::cout << chunk->chunkX << ", " << chunk->chunkZ << std::endl;
 		}
-		// // chunkVertexBuffer->setData(chunk->getChunkMeshData(), chunk->getChunkMeshVerticiesCount());
-		// // setSubData?
-		// // separate vbo for each chunk?
-
-		// chunk->getVbo()->bind();
-
-		glDrawArrays(GL_TRIANGLES, 0, chunk->getChunkMeshVerticiesCount());
-		// std::cout << chunk->chunkX << ", " << chunk->chunkZ << std::endl;
 
 		chunk = chunk->next;
 	}
