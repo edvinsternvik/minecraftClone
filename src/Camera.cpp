@@ -26,7 +26,7 @@ Camera::Camera() {
 void Camera::init() {
 	localVelocity.z = 0.0;
 	mousePos = Input::mousePos();
-	localPosition = Vector3(3.0, 76.0, 4.0);
+	localPosition = Vector3(3.0, 64.0, 4.0);
 	localRotation = Vector3(0.0, 0.0, 0.0);
 }
 
@@ -55,23 +55,29 @@ void Camera::update() {
 	if(Input::keyDown(KEY_D)) {
 		movement.x += movementSpeed;
 	}
-	if(Input::keyDown(KEY_SPACE) && isGrounded) {
-		movement.y = 1.1;
+	if(Input::keyDown(KEY_SPACE)) {
+		if(isGrounded) movement.y = 1.1;
+		// movement.y += movementSpeed;
 	}
 	if(Input::keyDown(KEY_LEFT_CONTROL)) {
 		movement.y -= movementSpeed;
 	}
 
+	Vector3 deltaMovement;
+
 	Vector3 rotation = getRotation();
 	float dirRad = glm::radians(rotation.y);
 	float dirRadRight = glm::radians(rotation.y + 90.0);
-	localVelocity.z += std::cos(dirRad) * movement.z;
-	localVelocity.x += std::sin(dirRad) * -movement.z;
+	deltaMovement.z += std::cos(dirRad) * movement.z;
+	deltaMovement.x += std::sin(dirRad) * -movement.z;
 
-	localVelocity.z += std::cos(dirRadRight) * -movement.x;
-	localVelocity.x += std::sin(dirRadRight) * movement.x;
+	deltaMovement.z += std::cos(dirRadRight) * -movement.x;
+	deltaMovement.x += std::sin(dirRadRight) * movement.x;
 
-	localVelocity.y += movement.y;
+	deltaMovement.y += movement.y;
+
+	localVelocity = localVelocity + deltaMovement;
+	// localPosition = localPosition + deltaMovement;
 
 	Vector3 position = getPosition();
 	viewMatrix = glm::rotate(glm::mat4(1.0), glm::radians(rotation.x), glm::vec3(1.0, 0.0, 0.0));
