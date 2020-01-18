@@ -12,4 +12,5 @@ public:
 public:
 	Vector2 mousePos;
 	glm::mat4 viewMatrix;
+	bool mouse1Pressed = false, mouse2Pressed = false;
 };

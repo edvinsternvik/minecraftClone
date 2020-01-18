@@ -1,6 +1,6 @@
 #define MOUSE_KEY_LEFT 0
-#define MOUSE_KEY_RIGHT 2
-#define MOUSE_KEY_MIDDLE 3
+#define MOUSE_KEY_RIGHT 1
+#define MOUSE_KEY_MIDDLE 2
 
 //Copied from glfw3.h
 /* The unknown key */

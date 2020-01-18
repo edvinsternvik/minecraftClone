@@ -26,7 +26,7 @@ Camera::Camera() {
 void Camera::init() {
 	localVelocity.z = 0.0;
 	mousePos = Input::mousePos();
-	localPosition = Vector3(3.0, 64.0, 4.0);
+	localPosition = Vector3(3.0, 96.0, 4.0);
 	localRotation = Vector3(0.0, 0.0, 0.0);
 }
 
@@ -39,9 +39,9 @@ void Camera::update() {
 	localRotation.x += deltaMousePos.y * 0.1;
     
 	Vector3 movement;
-	float movementSpeed = 0.05;
+	float movementSpeed = 0.04;
 	if(Input::keyDown(KEY_LEFT_SHIFT)) {
-		movementSpeed *= 2;
+		movementSpeed *= 1.6;
 	}
 	if(Input::keyDown(KEY_W)) {
 		movement.z -= movementSpeed;
@@ -87,14 +87,40 @@ void Camera::update() {
 	viewMatrix = glm::translate(viewMatrix, - glm::vec3(position.x, position.y, position.z));
 
 	if(Input::mouseKeyDown(MOUSE_KEY_LEFT)) {
-		Vector3 direction;
-		direction.x = std::cos(glm::radians(rotation.y - 90.0)) * std::cos(glm::radians(rotation.x));
-		direction.z = std::sin(glm::radians(rotation.y - 90.0)) * std::cos(glm::radians(rotation.x));
-		direction.y = -std::sin(glm::radians(rotation.x));
+		if(!mouse1Pressed) {
+			Vector3 direction;
+			direction.x = std::cos(glm::radians(rotation.y - 90.0)) * std::cos(glm::radians(rotation.x));
+			direction.z = std::sin(glm::radians(rotation.y - 90.0)) * std::cos(glm::radians(rotation.x));
+			direction.y = -std::sin(glm::radians(rotation.x));
 
-		Raycast ray(position, direction, 4.0);
-		if(ray.hit) {
-			Application::getInstance().getWorld()->changeBlock(std::floor(ray.hitPosition.x), std::floor(ray.hitPosition.y), std::floor(ray.hitPosition.z), BlockId::Air);
+			Raycast ray(position, direction, 4.0);
+			if(ray.hit) {
+				Application::getInstance().getWorld()->changeBlock(std::floor(ray.hitPosition.x), std::floor(ray.hitPosition.y), std::floor(ray.hitPosition.z), BlockId::Air);
+			}
 		}
+		mouse1Pressed = true;
+	}
+	else {
+		mouse1Pressed = false;
+	}
+
+	if(Input::mouseKeyDown(MOUSE_KEY_RIGHT)) {
+		std::cout << "hello" << std::endl;
+		if(!mouse2Pressed) {
+			Vector3 direction;
+			direction.x = std::cos(glm::radians(rotation.y - 90.0)) * std::cos(glm::radians(rotation.x));
+			direction.z = std::sin(glm::radians(rotation.y - 90.0)) * std::cos(glm::radians(rotation.x));
+			direction.y = -std::sin(glm::radians(rotation.x));
+
+			Raycast ray(position, direction, 4.0);
+			if(ray.hit) {
+				Vector3 newPos = ray.hitPosition - direction * 0.1;
+				Application::getInstance().getWorld()->changeBlock(std::floor(newPos.x), std::floor(newPos.y), std::floor(newPos.z), BlockId::Stone);
+			}
+		}
+		mouse2Pressed = true;
+	}
+	else {
+		mouse2Pressed = false;
 	}
 }

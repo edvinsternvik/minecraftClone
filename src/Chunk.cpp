@@ -5,7 +5,6 @@
 #include <iostream>
 Chunk::Chunk(int chunkX, int chunkZ) : chunkX(chunkX), chunkZ(chunkZ), next(nullptr), chunkMeshSize(0) {
 	PerlinNoise noise;
-	noise.seed(322);
 
 	for(int i = 0; i < CHUNK_SEGMENTS; ++i) {
 		int chunkSegmentYPos = i * CHUNK_SEGMENT_HEIGHT;
@@ -20,7 +19,7 @@ Chunk::Chunk(int chunkX, int chunkZ) : chunkX(chunkX), chunkZ(chunkZ), next(null
 					float noiseX = ((float)x / (float)CHUNK_WIDTH + (float)chunkX) * 0.5;
 					float noiseZ = ((float)z / (float)CHUNK_WIDTH + (float)chunkZ) * 0.5;
 					float noiseValue = noise.noise(noiseX, noiseZ);
-					noiseValue = (noiseValue) * 16 + 32;
+					noiseValue = (noiseValue) * 16 + 64;
 					if(yPos < noiseValue) blockId = BlockId::Stone;
 					else if(yPos < noiseValue + 3) blockId = BlockId::Dirt;
 					else if(yPos < noiseValue + 4) blockId = BlockId::Grass;
