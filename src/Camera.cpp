@@ -6,27 +6,14 @@
 #include "Raycast.h"
 
 Camera::Camera() {
-	float height = 1.8, halfHeight = height / 2.0, halfWidth = 0.5 / 2.0;
-	collisionRays.push_back(Vector3(-halfWidth, -height, -halfWidth));
-	collisionRays.push_back(Vector3( halfWidth, -height, -halfWidth));
-	collisionRays.push_back(Vector3(-halfWidth, -height,  halfWidth));
-	collisionRays.push_back(Vector3( halfWidth, -height,  halfWidth));
-
-	collisionRays.push_back(Vector3(-halfWidth, 0.1, -halfWidth));
-	collisionRays.push_back(Vector3( halfWidth, 0.1, -halfWidth));
-	collisionRays.push_back(Vector3(-halfWidth, 0.1,  halfWidth));
-	collisionRays.push_back(Vector3( halfWidth, 0.1,  halfWidth));
-
-	collisionRays.push_back(Vector3(-halfWidth, -halfHeight, -halfWidth));
-	collisionRays.push_back(Vector3( halfWidth, -halfHeight, -halfWidth));
-	collisionRays.push_back(Vector3(-halfWidth, -halfHeight,  halfWidth));
-	collisionRays.push_back(Vector3( halfWidth, -halfHeight,  halfWidth));
+	// float height = 1.8, halfHeight = height / 2.0, halfWidth = 0.5 / 2.0;
+	colliderSize = Vector3(0.8, 1.8, 0.8);
 }
 
 void Camera::init() {
 	localVelocity.z = 0.0;
 	mousePos = Input::mousePos();
-	localPosition = Vector3(3.0, 96.0, 4.0);
+	localPosition = Vector3(3.5, 96.0, 4.5);
 	localRotation = Vector3(0.0, 0.0, 0.0);
 }
 
@@ -84,7 +71,7 @@ void Camera::update() {
 	viewMatrix = glm::rotate(viewMatrix, dirRad, glm::vec3(0.0, 1.0, 0.0));
 	viewMatrix = glm::rotate(viewMatrix, glm::radians(rotation.z), glm::vec3(0.0, 0.0, 1.0));
 
-	viewMatrix = glm::translate(viewMatrix, - glm::vec3(position.x, position.y, position.z));
+	viewMatrix = glm::translate(viewMatrix, - glm::vec3(position.x, position.y + colliderSize.y * 0.4, position.z));
 
 	if(Input::mouseKeyDown(MOUSE_KEY_LEFT)) {
 		if(!mouse1Pressed) {
@@ -93,7 +80,7 @@ void Camera::update() {
 			direction.z = std::sin(glm::radians(rotation.y - 90.0)) * std::cos(glm::radians(rotation.x));
 			direction.y = -std::sin(glm::radians(rotation.x));
 
-			Raycast ray(position, direction, 4.0);
+			Raycast ray(Vector3(position.x, position.y + colliderSize.y * 0.4, position.z), direction, 4.0);
 			if(ray.hit) {
 				Application::getInstance().getWorld()->changeBlock(std::floor(ray.hitPosition.x), std::floor(ray.hitPosition.y), std::floor(ray.hitPosition.z), BlockId::Air);
 			}
@@ -105,14 +92,13 @@ void Camera::update() {
 	}
 
 	if(Input::mouseKeyDown(MOUSE_KEY_RIGHT)) {
-		std::cout << "hello" << std::endl;
 		if(!mouse2Pressed) {
 			Vector3 direction;
 			direction.x = std::cos(glm::radians(rotation.y - 90.0)) * std::cos(glm::radians(rotation.x));
 			direction.z = std::sin(glm::radians(rotation.y - 90.0)) * std::cos(glm::radians(rotation.x));
 			direction.y = -std::sin(glm::radians(rotation.x));
 
-			Raycast ray(position, direction, 4.0);
+			Raycast ray(Vector3(position.x, position.y + colliderSize.y * 0.4, position.z), direction, 4.0);
 			if(ray.hit) {
 				Vector3 newPos = ray.hitPosition - direction * 0.1;
 				Application::getInstance().getWorld()->changeBlock(std::floor(newPos.x), std::floor(newPos.y), std::floor(newPos.z), BlockId::Stone);

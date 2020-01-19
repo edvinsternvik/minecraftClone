@@ -30,7 +30,7 @@ public:
 
 public:
 	Vector3 localPosition, localRotation, localScale, localVelocity;
-	std::vector<Vector3> collisionRays;
+	Vector3 colliderSize;
 	bool isGrounded = false;
 
 private:

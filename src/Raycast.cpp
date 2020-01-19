@@ -54,7 +54,7 @@ Raycast::Raycast(Vector3 startPos, Vector3 direction, float length) {
 		if(scalarY < 0.0) scalarY = 2.0;
 		if(scalarZ < 0.0) scalarZ = 2.0;
 
-		float smallestScalar = std::min(scalarX, std::min(scalarY, scalarZ)) + 0.01;
+		float smallestScalar = std::min(scalarX, std::min(scalarY, scalarZ)) + 0.0001;
 
 		if(!(smallestScalar > 0.0)) { // Break if something has gone wrong
 			break;
