@@ -1,5 +1,6 @@
 #include "PerlinNoise.h"
 #include <math.h>
+#include <cmath>
 
 void PerlinNoise::seed(int seed) {
 	

@@ -1,5 +1,6 @@
 #include "VertexBuffer.h"
 #include <GL/glew.h>
+#include <cmath>
 
 VertexBuffer::VertexBuffer(const float* verticies, int verticiesCount, const int attributes[], int attributesCount) {
 	init(attributes, attributesCount);
