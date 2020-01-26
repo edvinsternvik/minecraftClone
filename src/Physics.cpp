@@ -26,8 +26,6 @@ void Physics::update(float deltaTime, World* world) {
 		Vector3 movement = rayLength;
 		bool hit = false;
 		go->isGrounded = false;
-		Vector3 position = go->getPosition();
-
 		
 		std::vector<Vector3> collisionVerticies;
 		Vector3 hCollSize = go->colliderSize * 0.5;
@@ -41,11 +39,8 @@ void Physics::update(float deltaTime, World* world) {
 		collisionVerticies.push_back(Vector3(-hCollSize.x, hCollSize.y,  hCollSize.z));
 		collisionVerticies.push_back(Vector3( hCollSize.x, hCollSize.y,  hCollSize.z));
 
-		Vector3 deltaPos = position - Vector3(std::floor(position.x), std::floor(position.y), std::floor(position.z));
-
-
 		for(Vector3& vertexPos : collisionVerticies) {
-			Vector3 currentPos = position + vertexPos;
+			Vector3 currentPos = go->getPosition() + vertexPos;
 
 			Vector3 blockPos(std::floor(currentPos.x), std::floor(currentPos.y), std::floor(currentPos.z));
 			Vector3 local = currentPos - blockPos;
@@ -56,39 +51,81 @@ void Physics::update(float deltaTime, World* world) {
 			Raycast yRay(blockPos + yLocal, Vector3(0.0, rayDirSign.y, 0.0), rayLength.y);
 			Raycast zRay(blockPos + zLocal, Vector3(0.0, 0.0, rayDirSign.z), rayLength.z);
 
-			if(xRay.rayLength == 0 && yRay.rayLength == 0 && zRay.rayLength == 0) {
-				movement = rayLength * -1.0;
-				go->localVelocity.x = 0.0;
-				go->localVelocity.z = 0.0;
-			}
-			else {
 
-				xRay.rayLength = std::max(xRay.rayLength - 0.00011, 0.0);
-				yRay.rayLength = std::max(yRay.rayLength - 0.00011, 0.0);
-				zRay.rayLength = std::max(zRay.rayLength - 0.00011, 0.0);
-				if(xRay.rayLength == 0.0) {
+			xRay.rayLength = std::max(xRay.rayLength - 0.0001, 0.0);
+			yRay.rayLength = std::max(yRay.rayLength - 0.0001, 0.0);
+			zRay.rayLength = std::max(zRay.rayLength - 0.0001, 0.0);
+
+			float xFinalRayLength = xRay.rayLength;
+			float yFinalRayLength = yRay.rayLength;
+			float zFinalRayLength = zRay.rayLength;
+
+			if(xRay.hit) {
+				go->localVelocity.x = 0.0;
+
+				float xRayLength = std::round(local.x + xRay.rayLength * rayDirSign.x);
+				xFinalRayLength = std::max(std::abs(xRayLength - local.x) - 0.000001, 0.0);
+			}
+
+			if(yRay.hit) {
+				go->localVelocity.y = 0.0;
+				if(vertexPos.y < 0.0) go->isGrounded = true;
+
+				float yRayLength = std::round(local.y + yRay.rayLength * rayDirSign.y);
+				yFinalRayLength = std::max(std::abs(yRayLength - local.y) - 0.00001, 0.0);
+			}
+
+			if(zRay.hit) {
+				go->localVelocity.z = 0.0;
+
+				float zRayLength = std::round(local.z + zRay.rayLength * rayDirSign.z);
+				zFinalRayLength = std::max(std::abs(zRayLength - local.z) - 0.000001, 0.0);
+			}
+
+			Vector3 newMovement = movement;
+
+			if(xFinalRayLength < newMovement.x) newMovement.x = xFinalRayLength;
+			if(yFinalRayLength < newMovement.y) newMovement.y = yFinalRayLength;
+			if(zFinalRayLength < newMovement.z) newMovement.z = zFinalRayLength;
+
+			movement = newMovement;
+		}
+
+		Vector3 oldPos = go->localPosition;
+		Vector3 newPos = go->localPosition + movement * rayDirSign;
+
+		for(Vector3& vertexPos : collisionVerticies) { // Fix diagonals
+			Vector3 oldVertPos = oldPos + vertexPos;
+			Vector3 newVertPos = newPos + vertexPos;
+
+			Vector3 deltaPos = newVertPos - oldVertPos;
+			float movementRayLength = deltaPos.length();
+
+			Raycast ray(oldVertPos, deltaPos, movementRayLength * 1.0001);
+			ray.rayLength = std::max(ray.rayLength - 0.00011, 0.0);
+
+			if(ray.hit) {
+				Vector3 oldBlockPos(std::floor(oldVertPos.x), std::floor(oldVertPos.y), std::floor(oldVertPos.z));
+				Vector3 newBlockPos(std::floor(newVertPos.x), std::floor(newVertPos.y), std::floor(newVertPos.z));
+
+				if(oldBlockPos.x != newBlockPos.x) {
+					movement.x = 0.0;
 					go->localVelocity.x = 0.0;
 				}
-
-				if(yRay.rayLength == 0.0) {
-					go->localVelocity.y = 0.0;
-					go->isGrounded = true;
-				}
-
-				if(zRay.rayLength == 0.0) {
+				// if(oldBlockPos.y != newBlockPos.y) {
+				// 	movement.y = 0.0;
+				// 	go->localVelocity.y = 0.0;
+				// }
+				if(oldBlockPos.z != newBlockPos.z) {
+					movement.z = 0.0;
 					go->localVelocity.z = 0.0;
 				}
 
-
-				if(xRay.rayLength < movement.x) movement.x = xRay.rayLength;
-				if(yRay.rayLength < movement.y) movement.y = yRay.rayLength;
-				if(zRay.rayLength < movement.z) movement.z = zRay.rayLength;
 			}
 		}
 
-		Vector3 newPos = go->localPosition + movement * rayDirSign;
+		go->localPosition = go->localPosition + movement * rayDirSign;
 
-		go->localPosition = newPos;
 	}
 
 }
