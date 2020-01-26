@@ -17,7 +17,7 @@ void Camera::init() {
 	localRotation = Vector3(0.0, 0.0, 0.0);
 }
 
-void Camera::update() {
+void Camera::update(float deltaTime) {
 	Vector2 currentMousePos = Input::mousePos();
 	Vector2 deltaMousePos = currentMousePos - mousePos;
 	mousePos = currentMousePos;
@@ -26,29 +26,35 @@ void Camera::update() {
 	localRotation.x += deltaMousePos.y * 0.1;
     
 	Vector3 movement;
-	float movementSpeed = 0.04;
+	float movementSpeed = deltaTime * 0.5;
+	float jumpHeight = 1.1;
+	bool jump = false;
 	if(Input::keyDown(KEY_LEFT_SHIFT)) {
-		movementSpeed *= 1.6;
+		movementSpeed *= 1.5;
 	}
 	if(Input::keyDown(KEY_W)) {
-		movement.z -= movementSpeed;
+		movement.z -= 1.0;
 	}
 	if(Input::keyDown(KEY_S)) {
-		movement.z += movementSpeed;
+		movement.z += 1.0;
 	}
 	if(Input::keyDown(KEY_A)) {
-		movement.x -= movementSpeed;
+		movement.x -= 1.0;
 	}
 	if(Input::keyDown(KEY_D)) {
-		movement.x += movementSpeed;
+		movement.x += 1.0;
 	}
 	if(Input::keyDown(KEY_SPACE)) {
-		if(isGrounded) movement.y = 1.1;
+		if(isGrounded) jump = true;
 		// movement.y += movementSpeed;
 	}
 	if(Input::keyDown(KEY_LEFT_CONTROL)) {
-		movement.y -= movementSpeed;
+		movement.y -= 1.0;
 	}
+
+	float movementLength = movement.length();
+	if(movementLength != 0.0) movement = movement * (1.0 / movement.length()) * movementSpeed;
+	if(jump) movement.y = jumpHeight;
 
 	Vector3 deltaMovement;
 

@@ -7,7 +7,7 @@ public:
 	Camera();
 
 	virtual void init() override;
-	virtual void update() override;
+	virtual void update(float deltaTime) override;
 
 public:
 	Vector2 mousePos;

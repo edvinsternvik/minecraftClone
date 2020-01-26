@@ -39,9 +39,9 @@ void World::init() {
 	}
 }
 
-void World::update() {
+void World::update(float deltaTime) {
 	for(GameObject* go : gameObjects) {
-		go->update();
+		go->update(deltaTime);
 	}
 
 	// Create chunks

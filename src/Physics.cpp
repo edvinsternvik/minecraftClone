@@ -101,7 +101,7 @@ void Physics::update(float deltaTime, World* world) {
 			Vector3 deltaPos = newVertPos - oldVertPos;
 			float movementRayLength = deltaPos.length();
 
-			Raycast ray(oldVertPos, deltaPos, movementRayLength * 1.0001);
+			Raycast ray(oldVertPos, deltaPos, movementRayLength * 1.01);
 			ray.rayLength = std::max(ray.rayLength - 0.00011, 0.0);
 
 			if(ray.hit) {

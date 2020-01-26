@@ -11,7 +11,7 @@ public:
 	~World();
 
 	void init();
-	void update();
+	void update(float deltaTime);
 	
 	template<class T>
 	T* createGameObject() {

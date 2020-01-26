@@ -37,13 +37,10 @@ void Application::run() {
     double timer = 0.0;
     float deltaTime = 0.0;
 	while (window->isOpen()) {
-        // std::cout << "Loop" << std::endl;
         std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
         
-        world->update();
-        // std::cout << "world" << std::endl;
+        world->update(deltaTime);
         physics->update(deltaTime, world);
-        // std::cout << "physics" << std::endl;
 		renderer->render(world);
 
         window->swapBuffers();
