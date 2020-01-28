@@ -173,6 +173,19 @@ void World::generateChunksAroundPlayer(int maxChunksPerFrame) {
 				if(!chunkExists) {
 					Chunk* newChunk = createChunk(chunkX, chunkZ);
 					newChunk->generateChunkMesh();
+
+					int worldX = chunkX * 16, worldZ = chunkZ * 16;
+
+					Chunk* chunk1 = getChunk(worldX - 1, worldZ);
+					Chunk* chunk2 = getChunk(worldX, worldZ - 1);
+					Chunk* chunk3 = getChunk(worldX + 1, worldZ);
+					Chunk* chunk4 = getChunk(worldX, worldZ + 1);
+
+					if(chunk1 != nullptr) chunk1->generateChunkMesh();
+					if(chunk2 != nullptr) chunk2->generateChunkMesh();
+					if(chunk3 != nullptr) chunk3->generateChunkMesh();
+					if(chunk4 != nullptr) chunk4->generateChunkMesh();
+
 					if(++chunksGenerated >= maxChunksPerFrame) return;
 				}
 			}

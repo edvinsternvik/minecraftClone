@@ -38,7 +38,7 @@ void Application::run() {
     float deltaTime = 0.0;
 	while (window->isOpen()) {
         std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
-        
+
         world->update(deltaTime);
         physics->update(deltaTime, world);
 		renderer->render(world);
