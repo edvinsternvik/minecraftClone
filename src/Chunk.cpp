@@ -82,21 +82,19 @@ void Chunk::generateChunkSegmentMesh(int index){
 	for(int x = 0; x < CHUNK_WIDTH; ++x) {
 		for(int y = yOffset; y < CHUNK_SEGMENT_HEIGHT + yOffset; ++y) {
 			for(int z = 0; z < CHUNK_WIDTH; ++z) {
-				const Block* currentBlock = &getBlock(x, y, z);
-				if(currentBlock->getBlockType() != BlockType::Transparent) {
+				const Block* block = &getBlock(x, y, z);
+				if(block->getBlockType() != BlockType::Transparent) {
 					// std::cout << x << ", " << y << ", " << z << std::endl;
 				}
-				if(currentBlock->getBlockType() == BlockType::Solid) {
+				if(block->getBlockType() == BlockType::Solid) {
 					int worldX = x + chunkWorldX, worldZ = z + chunkWorldZ;
 
-					int textureX = currentBlock->getTextureX();
-					int textureY = currentBlock->getTextureY();
-					if(!world->isSolid(worldX, y, worldZ + 1)) segmentMesh->push_back(CubeModelData::getData(CubeSide::Front, Vector3(worldX, y, worldZ), textureX, textureY));
-					if(!world->isSolid(worldX, y, worldZ - 1)) segmentMesh->push_back(CubeModelData::getData(CubeSide::Back, Vector3(worldX, y, worldZ), textureX, textureY));
-					if(!world->isSolid(worldX - 1, y, worldZ)) segmentMesh->push_back(CubeModelData::getData(CubeSide::Left, Vector3(worldX, y, worldZ), textureX, textureY));
-					if(!world->isSolid(worldX + 1, y, worldZ)) segmentMesh->push_back(CubeModelData::getData(CubeSide::Right, Vector3(worldX, y, worldZ), textureX, textureY));
-					if(!world->isSolid(worldX, y + 1, worldZ)) segmentMesh->push_back(CubeModelData::getData(CubeSide::Top, Vector3(worldX, y, worldZ), textureX, textureY));
-					if(!world->isSolid(worldX, y - 1, worldZ)) segmentMesh->push_back(CubeModelData::getData(CubeSide::Down, Vector3(worldX, y, worldZ), textureX, textureY));
+					if(!world->isSolid(worldX, y, worldZ + 1)) segmentMesh->push_back(BlockModelData::getData(BlockSide::Front, Vector3(worldX, y, worldZ), block->getTexture(BlockSide::Front)));
+					if(!world->isSolid(worldX, y, worldZ - 1)) segmentMesh->push_back(BlockModelData::getData(BlockSide::Back, Vector3(worldX, y, worldZ), block->getTexture(BlockSide::Back)));
+					if(!world->isSolid(worldX - 1, y, worldZ)) segmentMesh->push_back(BlockModelData::getData(BlockSide::Left, Vector3(worldX, y, worldZ), block->getTexture(BlockSide::Left)));
+					if(!world->isSolid(worldX + 1, y, worldZ)) segmentMesh->push_back(BlockModelData::getData(BlockSide::Right, Vector3(worldX, y, worldZ), block->getTexture(BlockSide::Right)));
+					if(!world->isSolid(worldX, y + 1, worldZ)) segmentMesh->push_back(BlockModelData::getData(BlockSide::Top, Vector3(worldX, y, worldZ), block->getTexture(BlockSide::Top)));
+					if(!world->isSolid(worldX, y - 1, worldZ)) segmentMesh->push_back(BlockModelData::getData(BlockSide::Down, Vector3(worldX, y, worldZ), block->getTexture(BlockSide::Down)));
 				}
 			}
 		}

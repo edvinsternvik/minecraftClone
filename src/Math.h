@@ -71,6 +71,32 @@ public:
 	}
 };
 
+class Vector2i {
+public:
+	Vector2i(int x, int y) : x(x), y(y) {}
+	Vector2i() : x(0), y(0) {}
+
+public:
+	int x, y;
+
+public:
+	Vector2 operator + (Vector2 const &vec2) {
+		return Vector2(x + vec2.x, y + vec2.y);
+	}
+
+	Vector2 operator - (Vector2 const &vec2) {
+		return Vector2(x - vec2.x, y - vec2.y);
+	}
+
+	Vector2 operator * (Vector2 const &vec2) {
+		return Vector2(x * vec2.x, y * vec2.y);
+	}
+
+	Vector2 operator / (Vector2 const &vec2) {
+		return Vector2(x / vec2.x, y / vec2.y);
+	}
+};
+
 template<typename T>
 int sign(T val) {
 	return (T(0) < val) - (T(0) > val);
