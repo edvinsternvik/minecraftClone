@@ -39,6 +39,7 @@ public:
 	int chunkMeshSize;
 	Chunk* next = nullptr;
 
+	friend class TerrainGenerator;
 	friend class World;
 
 };

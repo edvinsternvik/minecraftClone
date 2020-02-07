@@ -2,6 +2,7 @@
 #include "Chunk.h"
 #include <vector>
 #include "Camera.h"
+#include "TerrainGenerator.h"
 
 class GameObject;
 
@@ -37,9 +38,10 @@ public:
 
 private:
 	Chunk* getChunk(int worldX, int worldZ);
-	void generateChunksAroundPlayer(int maxChunksPerFrame);
+	void generateChunksAroundPlayer();
 	void deleteChunksNotAroundPlayer(int maxChunksPerFrame);
 
 private:
 	GameObject* m_player;
+	TerrainGenerator m_terrainGenerator;
 };

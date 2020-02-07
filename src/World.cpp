@@ -45,7 +45,7 @@ void World::update(float deltaTime) {
 	}
 
 	// Create chunks
-	generateChunksAroundPlayer(1);
+	generateChunksAroundPlayer();
 	deleteChunksNotAroundPlayer(1);
 }
 
@@ -151,10 +151,11 @@ Chunk* World::getChunk(int worldX, int worldZ) {
 	return nullptr;
 }
 
-void World::generateChunksAroundPlayer(int maxChunksPerFrame) {
-	int chunksGenerated = 0;
+void World::generateChunksAroundPlayer() {
+	bool chunkGenerated = false;
 	int playerChunkX = std::floor(m_player->getPosition().x / (float)CHUNK_WIDTH);
 	int playerChunkZ = std::floor(m_player->getPosition().z / (float)CHUNK_WIDTH); 
+
 	for(int dist = 0; dist < renderDistance; ++dist) {
 		for(int x = -dist; x <= dist; ++x) {
 			for(int y = -dist; y <= dist; ++y) {
@@ -171,8 +172,10 @@ void World::generateChunksAroundPlayer(int maxChunksPerFrame) {
 				}
 
 				if(!chunkExists) {
+					chunkGenerated = true;
+
 					Chunk* newChunk = createChunk(chunkX, chunkZ);
-					newChunk->generateChunkMesh();
+					m_terrainGenerator.addChunkToQueue(newChunk);
 
 					int worldX = chunkX * 16, worldZ = chunkZ * 16;
 
@@ -181,14 +184,17 @@ void World::generateChunksAroundPlayer(int maxChunksPerFrame) {
 					Chunk* chunk3 = getChunk(worldX + 1, worldZ);
 					Chunk* chunk4 = getChunk(worldX, worldZ + 1);
 
-					if(chunk1 != nullptr) chunk1->generateChunkMesh();
-					if(chunk2 != nullptr) chunk2->generateChunkMesh();
-					if(chunk3 != nullptr) chunk3->generateChunkMesh();
-					if(chunk4 != nullptr) chunk4->generateChunkMesh();
-
-					if(++chunksGenerated >= maxChunksPerFrame) return;
+					if(chunk1 != nullptr) m_terrainGenerator.addChunkToQueue(chunk1);
+					if(chunk2 != nullptr) m_terrainGenerator.addChunkToQueue(chunk2);
+					if(chunk3 != nullptr) m_terrainGenerator.addChunkToQueue(chunk3);
+					if(chunk4 != nullptr) m_terrainGenerator.addChunkToQueue(chunk4);
 				}
 			}
+		}
+
+		if (chunkGenerated) {
+			std::cout << "hello" << std::endl;
+			m_terrainGenerator.generate();
 		}
 	}
 }
