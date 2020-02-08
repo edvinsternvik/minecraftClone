@@ -49,6 +49,8 @@ Renderer::Renderer() {
 	blockTextures = new TextureAtlas("assets/textures/Textures.png", 16, 16);
 	blockTextures->bind();
 
+	glClearColor(0.1, 0.6, 0.9, 1.0);
+
 	// glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 }
 
