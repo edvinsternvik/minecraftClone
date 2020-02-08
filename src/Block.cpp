@@ -23,71 +23,73 @@ const Block& BlockManager::getBlock(BlockId& blockId) {
 }
 
 std::array<float, 48> BlockModelData::getData(BlockSide cubeSide, Vector3 position, Vector2i TextureCoords) {
-	int textureX = TextureCoords.x, textureY = TextureCoords.y;
+	float textureX = TextureCoords.x, textureY = TextureCoords.y;
+	float tBegin = 0.001, tEnd = 0.999; // Texture offsets
+	float pBegin = 0.0, pEnd = 1.0; // Position offsets
 	if(cubeSide == BlockSide::Front) {
 		return {
-			0.0f  + position.x, 0.0f  + position.y, 1.0f + position.z, 0.0, 0.0, 1.0, 0.0f + textureX, 0.0f + textureY,
-			1.0f + position.x, 0.0f  + position.y, 1.0f + position.z, 0.0, 0.0, 1.0, 1.0f + textureX, 0.0f + textureY,
-			1.0f + position.x,  1.0f + position.y, 1.0f + position.z, 0.0, 0.0, 1.0, 1.0f + textureX, 1.0f + textureY,
+			pBegin + position.x, pBegin + position.y, pEnd + position.z, 0.0, 0.0, 1.0, tBegin + textureX, tBegin + textureY,
+			pEnd   + position.x, pBegin + position.y, pEnd + position.z, 0.0, 0.0, 1.0, tEnd   + textureX, tBegin + textureY,
+			pEnd   + position.x, pEnd   + position.y, pEnd + position.z, 0.0, 0.0, 1.0, tEnd   + textureX, tEnd   + textureY,
 
-			1.0f + position.x,  1.0f + position.y, 1.0f + position.z, 0.0, 0.0, 1.0, 1.0f + textureX, 1.0f + textureY,
-			0.0f  + position.x,  1.0f + position.y, 1.0f + position.z, 0.0, 0.0, 1.0, 0.0f + textureX, 1.0f + textureY,
-			0.0f  + position.x, 0.0f  + position.y, 1.0f + position.z, 0.0, 0.0, 1.0, 0.0f + textureX, 0.0f + textureY
+			pEnd   + position.x, pEnd   + position.y, pEnd + position.z, 0.0, 0.0, 1.0, tEnd   + textureX, tEnd   + textureY,
+			pBegin + position.x, pEnd   + position.y, pEnd + position.z, 0.0, 0.0, 1.0, tBegin + textureX, tEnd   + textureY,
+			pBegin + position.x, pBegin + position.y, pEnd + position.z, 0.0, 0.0, 1.0, tBegin + textureX, tBegin + textureY
 		};
 	}
 	else if(cubeSide == BlockSide::Back) {
 		return {
-			1.0f + position.x,  1.0f + position.y, 0.0f  + position.z, 0.0, 0.0, -1.0, 1.0f + textureX, 1.0f + textureY,
-			1.0f + position.x, 0.0f  + position.y, 0.0f  + position.z, 0.0, 0.0, -1.0, 1.0f + textureX, 0.0f + textureY,
-			0.0f  + position.x, 0.0f  + position.y, 0.0f  + position.z, 0.0, 0.0, -1.0, 0.0f + textureX, 0.0f + textureY,
+			pEnd   + position.x, pEnd   + position.y, pBegin + position.z, 0.0, 0.0, -1.0, tEnd   + textureX, tEnd   + textureY,
+			pEnd   + position.x, pBegin + position.y, pBegin + position.z, 0.0, 0.0, -1.0, tEnd   + textureX, tBegin + textureY,
+			pBegin + position.x, pBegin + position.y, pBegin + position.z, 0.0, 0.0, -1.0, tBegin + textureX, tBegin + textureY,
 
-			0.0f  + position.x, 0.0f  + position.y, 0.0f  + position.z, 0.0, 0.0, -1.0, 0.0f + textureX, 0.0f + textureY,
-			0.0f  + position.x,  1.0f + position.y, 0.0f  + position.z, 0.0, 0.0, -1.0, 0.0f + textureX, 1.0f + textureY,
-			1.0f + position.x,  1.0f + position.y, 0.0f  + position.z, 0.0, 0.0, -1.0, 1.0f + textureX, 1.0f + textureY
+			pBegin + position.x, pBegin + position.y, pBegin + position.z, 0.0, 0.0, -1.0, tBegin + textureX, tBegin + textureY,
+			pBegin + position.x, pEnd   + position.y, pBegin + position.z, 0.0, 0.0, -1.0, tBegin + textureX, tEnd   + textureY,
+			pEnd   + position.x, pEnd   + position.y, pBegin + position.z, 0.0, 0.0, -1.0, tEnd   + textureX, tEnd   + textureY
 		};
 	}
 	else if(cubeSide == BlockSide::Left) {
 		return {
-			0.0f  + position.x, 0.0f  + position.y, 0.0f  + position.z, -1.0, 0.0, 0.0, 0.0f + textureX, 0.0f + textureY,
-			0.0f  + position.x, 0.0f  + position.y,  1.0f + position.z, -1.0, 0.0, 0.0, 1.0f + textureX, 0.0f + textureY,
-			0.0f  + position.x,  1.0f + position.y,  1.0f + position.z, -1.0, 0.0, 0.0, 1.0f + textureX, 1.0f + textureY,
+			pBegin + position.x, pBegin + position.y, pBegin + position.z, -1.0, 0.0, 0.0, tBegin + textureX, tBegin + textureY,
+			pBegin + position.x, pBegin + position.y, pEnd   + position.z, -1.0, 0.0, 0.0, tEnd   + textureX, tBegin + textureY,
+			pBegin + position.x, pEnd   + position.y, pEnd   + position.z, -1.0, 0.0, 0.0, tEnd + textureX, tEnd   + textureY,
 
-			0.0f  + position.x,  1.0f + position.y,  1.0f + position.z, -1.0, 0.0, 0.0, 1.0f + textureX, 1.0f + textureY,
-			0.0f  + position.x,  1.0f + position.y, 0.0f  + position.z, -1.0, 0.0, 0.0, 0.0f + textureX, 1.0f + textureY,
-			0.0f  + position.x, 0.0f  + position.y, 0.0f  + position.z, -1.0, 0.0, 0.0, 0.0f + textureX, 0.0f + textureY
+			pBegin + position.x, pEnd   + position.y, pEnd   + position.z, -1.0, 0.0, 0.0, tEnd   + textureX, tEnd   + textureY,
+			pBegin + position.x, pEnd   + position.y, pBegin + position.z, -1.0, 0.0, 0.0, tBegin + textureX, tEnd   + textureY,
+			pBegin + position.x, pBegin + position.y, pBegin + position.z, -1.0, 0.0, 0.0, tBegin + textureX, tBegin + textureY
 		};
 	}
 	else if(cubeSide == BlockSide::Right) {
 		return {
-			1.0f + position.x,  1.0f + position.y,  1.0f + position.z, 1.0, 0.0, 0.0, 1.0f + textureX, 1.0f + textureY,
-			1.0f + position.x, 0.0f  + position.y,  1.0f + position.z, 1.0, 0.0, 0.0, 1.0f + textureX, 0.0f + textureY,
-			1.0f + position.x, 0.0f  + position.y, 0.0f  + position.z, 1.0, 0.0, 0.0, 0.0f + textureX, 0.0f + textureY,
+			pEnd   + position.x, pEnd   + position.y, pEnd   + position.z, 1.0, 0.0, 0.0, tEnd   + textureX, tEnd   + textureY,
+			pEnd   + position.x, pBegin + position.y, pEnd   + position.z, 1.0, 0.0, 0.0, tEnd   + textureX, tBegin + textureY,
+			pEnd   + position.x, pBegin + position.y, pBegin + position.z, 1.0, 0.0, 0.0, tBegin + textureX, tBegin + textureY,
 
-			1.0f + position.x, 0.0f  + position.y, 0.0f  + position.z, 1.0, 0.0, 0.0, 0.0f + textureX, 0.0f + textureY,
-			1.0f + position.x,  1.0f + position.y, 0.0f  + position.z, 1.0, 0.0, 0.0, 0.0f + textureX, 1.0f + textureY,
-			1.0f + position.x,  1.0f + position.y,  1.0f + position.z, 1.0, 0.0, 0.0, 1.0f + textureX, 1.0f + textureY
+			pEnd   + position.x, pBegin + position.y, pBegin + position.z, 1.0, 0.0, 0.0, tBegin + textureX, tBegin + textureY,
+			pEnd   + position.x, pEnd   + position.y, pBegin + position.z, 1.0, 0.0, 0.0, tBegin + textureX, tEnd   + textureY,
+			pEnd   + position.x, pEnd   + position.y, pEnd   + position.z, 1.0, 0.0, 0.0, 1.0f + textureX, tEnd   + textureY
 		};
 	}
 	else if(cubeSide == BlockSide::Top) {
 		return {
-			0.0f  + position.x,  1.0f + position.y,  1.0f + position.z, 0.0, 1.0, 0.0, 0.0f + textureX, 0.0f + textureY,
-			1.0f + position.x,  1.0f + position.y,  1.0f + position.z, 0.0, 1.0, 0.0, 1.0f + textureX, 0.0f + textureY,
-			1.0f + position.x,  1.0f + position.y, 0.0f  + position.z, 0.0, 1.0, 0.0, 1.0f + textureX, 1.0f + textureY,
+			pBegin + position.x, pEnd   + position.y, pEnd   + position.z, 0.0, 1.0, 0.0, tBegin + textureX, tBegin + textureY,
+			pEnd   + position.x, pEnd   + position.y, pEnd   + position.z, 0.0, 1.0, 0.0, tEnd   + textureX, tBegin + textureY,
+			pEnd   + position.x, pEnd   + position.y, pBegin + position.z, 0.0, 1.0, 0.0, tEnd   + textureX, tEnd   + textureY,
 
-			1.0f + position.x,  1.0f + position.y, 0.0f  + position.z, 0.0, 1.0, 0.0, 1.0f + textureX, 1.0f + textureY,
-			0.0f  + position.x,  1.0f + position.y, 0.0f  + position.z, 0.0, 1.0, 0.0, 0.0f + textureX, 1.0f + textureY,
-			0.0f  + position.x,  1.0f + position.y,  1.0f + position.z, 0.0, 1.0, 0.0, 0.0f + textureX, 0.0f + textureY
+			pEnd   + position.x, pEnd   + position.y, pBegin + position.z, 0.0, 1.0, 0.0, tEnd   + textureX, tEnd   + textureY,
+			pBegin + position.x, pEnd   + position.y, pBegin + position.z, 0.0, 1.0, 0.0, tBegin + textureX, tEnd   + textureY,
+			pBegin + position.x, pEnd   + position.y, pEnd   + position.z, 0.0, 1.0, 0.0, tBegin + textureX, tBegin + textureY
 		};
 	}
 	else {
 		return {
-			1.0f + position.x, 0.0f  + position.y, 0.0f  + position.z, 0.0, -1.0, 0.0, 1.0f + textureX, 1.0f + textureY,
-			1.0f + position.x, 0.0f  + position.y,  1.0f + position.z, 0.0, -1.0, 0.0, 1.0f + textureX, 0.0f + textureY,
-			0.0f  + position.x, 0.0f  + position.y,  1.0f + position.z, 0.0, -1.0, 0.0, 0.0f + textureX, 0.0f + textureY,
+			pEnd   + position.x, pBegin + position.y, pBegin + position.z, 0.0, -1.0, 0.0, tEnd   + textureX, tEnd   + textureY,
+			pEnd   + position.x, pBegin + position.y, pEnd   + position.z, 0.0, -1.0, 0.0, tEnd   + textureX, tBegin + textureY,
+			pBegin + position.x, pBegin + position.y, pEnd   + position.z, 0.0, -1.0, 0.0, tBegin + textureX, tBegin + textureY,
 
-			0.0f  + position.x, 0.0f  + position.y,  1.0f + position.z, 0.0, -1.0, 0.0, 0.0f + textureX, 0.0f + textureY,
-			0.0f  + position.x, 0.0f  + position.y, 0.0f  + position.z, 0.0, -1.0, 0.0, 0.0f + textureX, 1.0f + textureY,
-			1.0f + position.x, 0.0f  + position.y, 0.0f  + position.z, 0.0, -1.0, 0.0, 1.0f + textureX, 1.0f + textureY
+			pBegin + position.x, pBegin + position.y, pEnd   + position.z, 0.0, -1.0, 0.0, tBegin + textureX, tBegin + textureY,
+			pBegin + position.x, pBegin + position.y, pBegin + position.z, 0.0, -1.0, 0.0, tBegin + textureX, tEnd   + textureY,
+			pEnd   + position.x, pBegin + position.y, pBegin + position.z, 0.0, -1.0, 0.0, tEnd   + textureX, tEnd   + textureY
 		};
 	}
 }
