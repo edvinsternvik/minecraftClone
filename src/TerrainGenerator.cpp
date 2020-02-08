@@ -1,7 +1,5 @@
 #include "TerrainGenerator.h"
-#include <iostream>
 #include "Chunk.h"
-#include <chrono>
 
 TerrainGenerator::TerrainGenerator() : m_generateTerrainThread(&TerrainGenerator::generateTerrainThreadFunction, this) {
 

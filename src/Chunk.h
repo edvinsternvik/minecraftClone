@@ -17,7 +17,6 @@ public:
 	bool isSolid(int x, int y, int z);
 	inline const Block& getBlock(int x, int y, int z) {
 		Vector4i segPos = calculateSegmentPosFromChunkPos(x, y, z);
-		// std::cout << x << ", " << y << ", " << z << " :::: " << segPos.x << ", " << segPos.y << ", " << segPos.z << ", " << segPos.w << std::endl;
 		return BlockManager::getBlock(blocks[segPos.w][segPos.x][segPos.y][segPos.z]);
 	}
 	void changeBlock(int x, int y, int z, BlockId blockId);

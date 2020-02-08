@@ -64,7 +64,7 @@ void Physics::update(float deltaTime, World* world) {
 				go->localVelocity.x = 0.0;
 
 				float xRayLength = std::round(local.x + xRay.rayLength * rayDirSign.x);
-				xFinalRayLength = std::max(std::abs(xRayLength - local.x) - 0.000001, 0.0);
+				xFinalRayLength = std::max(std::abs(xRayLength - local.x) - 0.0001, 0.0);
 			}
 
 			if(yRay.hit) {
@@ -72,14 +72,14 @@ void Physics::update(float deltaTime, World* world) {
 				if(vertexPos.y < 0.0) go->isGrounded = true;
 
 				float yRayLength = std::round(local.y + yRay.rayLength * rayDirSign.y);
-				yFinalRayLength = std::max(std::abs(yRayLength - local.y) - 0.00001, 0.0);
+				yFinalRayLength = std::max(std::abs(yRayLength - local.y) - 0.0001, 0.0);
 			}
 
 			if(zRay.hit) {
 				go->localVelocity.z = 0.0;
 
 				float zRayLength = std::round(local.z + zRay.rayLength * rayDirSign.z);
-				zFinalRayLength = std::max(std::abs(zRayLength - local.z) - 0.000001, 0.0);
+				zFinalRayLength = std::max(std::abs(zRayLength - local.z) - 0.0001, 0.0);
 			}
 
 			Vector3 newMovement = movement;
@@ -101,8 +101,8 @@ void Physics::update(float deltaTime, World* world) {
 			Vector3 deltaPos = newVertPos - oldVertPos;
 			float movementRayLength = deltaPos.length();
 
-			Raycast ray(oldVertPos, deltaPos, movementRayLength * 1.01);
-			ray.rayLength = std::max(ray.rayLength - 0.00011, 0.0);
+			Raycast ray(oldVertPos, deltaPos, movementRayLength);
+			// ray.rayLength = std::max(ray.rayLength - 0.0001, 0.0);
 
 			if(ray.hit) {
 				Vector3 oldBlockPos(std::floor(oldVertPos.x), std::floor(oldVertPos.y), std::floor(oldVertPos.z));

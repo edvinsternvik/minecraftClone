@@ -193,7 +193,6 @@ void World::generateChunksAroundPlayer() {
 		}
 
 		if (chunkGenerated) {
-			std::cout << "hello" << std::endl;
 			m_terrainGenerator.generate();
 		}
 	}

@@ -17,7 +17,7 @@ void Camera::init() {
 	localRotation = Vector3(0.0, 0.0, 0.0);
 }
 
-void Camera::update(float deltaTime) {
+void Camera::update(float deltaTime) {	
 	Vector2 currentMousePos = Input::mousePos();
 	Vector2 deltaMousePos = currentMousePos - mousePos;
 	mousePos = currentMousePos;

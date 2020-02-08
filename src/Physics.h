@@ -10,5 +10,5 @@ public:
 	void update(float deltaTime, World* world);
 
 private:
-	float gravity = -0.982f * 0.5;
+	double gravity = -0.982 * 0.5;
 };
