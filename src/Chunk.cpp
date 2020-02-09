@@ -23,6 +23,7 @@ Chunk::Chunk(int chunkX, int chunkZ) : chunkX(chunkX), chunkZ(chunkZ), next(null
 					if(yPos < noiseValue) blockId = BlockId::Stone;
 					else if(yPos < noiseValue + 3) blockId = BlockId::Dirt;
 					else if(yPos < noiseValue + 4) blockId = BlockId::Grass;
+					else if(yPos < noiseValue + 5 && rand() % 10 == 0 ) blockId = BlockId::Tallgrass;
 
 					blocks[i][x][y][z] = blockId;
 				}
@@ -83,18 +84,24 @@ void Chunk::generateChunkSegmentMesh(int index){
 		for(int y = yOffset; y < CHUNK_SEGMENT_HEIGHT + yOffset; ++y) {
 			for(int z = 0; z < CHUNK_WIDTH; ++z) {
 				const Block* block = &getBlock(x, y, z);
-				if(block->getBlockType() != BlockType::Transparent) {
-					// std::cout << x << ", " << y << ", " << z << std::endl;
-				}
-				if(block->getBlockType() == BlockType::Solid) {
-					int worldX = x + chunkWorldX, worldZ = z + chunkWorldZ;
+				int worldX = x + chunkWorldX, worldZ = z + chunkWorldZ;
 
-					if(!world->isSolid(worldX, y, worldZ + 1)) segmentMesh->push_back(BlockModelData::getData(BlockSide::Front, Vector3(worldX, y, worldZ), block->getTexture(BlockSide::Front)));
-					if(!world->isSolid(worldX, y, worldZ - 1)) segmentMesh->push_back(BlockModelData::getData(BlockSide::Back, Vector3(worldX, y, worldZ), block->getTexture(BlockSide::Back)));
-					if(!world->isSolid(worldX - 1, y, worldZ)) segmentMesh->push_back(BlockModelData::getData(BlockSide::Left, Vector3(worldX, y, worldZ), block->getTexture(BlockSide::Left)));
-					if(!world->isSolid(worldX + 1, y, worldZ)) segmentMesh->push_back(BlockModelData::getData(BlockSide::Right, Vector3(worldX, y, worldZ), block->getTexture(BlockSide::Right)));
-					if(!world->isSolid(worldX, y + 1, worldZ)) segmentMesh->push_back(BlockModelData::getData(BlockSide::Top, Vector3(worldX, y, worldZ), block->getTexture(BlockSide::Top)));
-					if(!world->isSolid(worldX, y - 1, worldZ)) segmentMesh->push_back(BlockModelData::getData(BlockSide::Down, Vector3(worldX, y, worldZ), block->getTexture(BlockSide::Down)));
+				if(block->getBlockType() == BlockType::Solid) {
+
+					if(!world->isSolid(worldX, y, worldZ + 1)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Front, Vector3(worldX, y, worldZ), block->getBlockId()));
+					if(!world->isSolid(worldX, y, worldZ - 1)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Back, Vector3(worldX, y, worldZ),  block->getBlockId()));
+					if(!world->isSolid(worldX - 1, y, worldZ)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Left, Vector3(worldX, y, worldZ),  block->getBlockId()));
+					if(!world->isSolid(worldX + 1, y, worldZ)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Right, Vector3(worldX, y, worldZ), block->getBlockId()));
+					if(!world->isSolid(worldX, y + 1, worldZ)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Top, Vector3(worldX, y, worldZ),   block->getBlockId()));
+					if(!world->isSolid(worldX, y - 1, worldZ)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Down, Vector3(worldX, y, worldZ),  block->getBlockId()));
+				}
+				else if(block->getBlockType() == BlockType::Transparent) {
+					if(block->getBlockId() == BlockId::Tallgrass) {
+						segmentMesh->push_back(BlockModelData::getFoliageData(BlockSide::Front, Vector3(worldX, y, worldZ), block->getBlockId()));
+						segmentMesh->push_back(BlockModelData::getFoliageData(BlockSide::Right, Vector3(worldX, y, worldZ), block->getBlockId()));
+						segmentMesh->push_back(BlockModelData::getFoliageData(BlockSide::Back, Vector3(worldX, y, worldZ), block->getBlockId()));
+						segmentMesh->push_back(BlockModelData::getFoliageData(BlockSide::Left, Vector3(worldX, y, worldZ), block->getBlockId()));
+					}
 				}
 			}
 		}
@@ -112,7 +119,7 @@ void Chunk::updateChunkMesh(int x, int y, int z){
 
 	int chunkSegmentY = y % CHUNK_SEGMENT_HEIGHT;
 	if(chunkSegmentY == 0 && segPos.w > 0) generateChunkSegmentMesh(segPos.w - 1);
-	if(chunkSegmentY == CHUNK_SEGMENT_HEIGHT - 1 && segPos.w < CHUNK_SEGMENTS - 1) generateChunkSegmentMesh(segPos.w + 1); 
+	if(chunkSegmentY == CHUNK_SEGMENT_HEIGHT - 1 && segPos.w < CHUNK_SEGMENTS - 1) generateChunkSegmentMesh(segPos.w + 1);
 }
 
 Vector4i Chunk::calculateSegmentPosFromChunkPos(int x, int y, int z) {

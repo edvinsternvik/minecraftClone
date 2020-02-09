@@ -10,5 +10,8 @@ uniform sampler2D epicTexture;
 
 void main() {
 	vec2 textureCoords = u_textureSize * texCoords;
-	FragColor = texture(epicTexture, textureCoords) * light;
+	vec4 texColor = texture(epicTexture, textureCoords);
+	if(texColor.a < 0.1) discard;
+
+	FragColor = texColor * light;
 } 

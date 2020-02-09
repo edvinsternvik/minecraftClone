@@ -1,13 +1,10 @@
 #pragma once
 #include <array>
+#include "BlockModelData.h"
 #include "Math.h"
 
-enum BlockSide {
-	Front, Back, Left, Right, Top, Down
-};
-
 enum BlockId {
-	Air, Grass, Stone, Dirt
+	Air, Grass, Stone, Dirt, Tallgrass
 };
 
 enum class BlockType {
@@ -39,19 +36,6 @@ public:
 	static const Block& getBlock(BlockId& blockId);
 
 public:
-	static const unsigned int BlockCount = 4; 
+	static const unsigned int BlockCount = 5; 
 	static const Block Blocks[BlockCount];
 };
-
-class BlockModelData {
-public:
-	static std::array<float, 48> getData(BlockSide cubeSide, Vector3 position, Vector2i textureCoords);
-};
-
-// class Block {
-// public:
-// 	static virtual inline const char* getBlockName(Block block) = 0;
-// 	static virtual inline int getBlockId(Block block);
-// 	static virtual inline BlockType getBlockType(Block block);
-// 	//getBlockTextureOffset
-// };

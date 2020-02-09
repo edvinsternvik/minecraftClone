@@ -21,8 +21,8 @@ World::~World() {
 }
 
 void World::init() {
-	for(int i = -4; i < 4; ++i) {
-		for(int j = -4; j < 4; ++j) {
+	for(int i = -renderDistance; i < renderDistance; ++i) {
+		for(int j = -renderDistance; j < renderDistance; ++j) {
 			createChunk(i, j);
 		}
 	}
@@ -96,7 +96,7 @@ bool World::isSolid(int x, int y, int z) {
 	Chunk* chunk = getChunk(x, z);
 	if(chunk == nullptr) {
 		// std::cout << x << ", " << z << " : " << std::floor(x / (float)CHUNK_WIDTH) << ", " << std::floor(z / (float)CHUNK_WIDTH) << std::endl;
-		return false;
+		return true;
 	}
 
 	int chunkX = x % CHUNK_WIDTH, chunkZ = z % CHUNK_WIDTH;
