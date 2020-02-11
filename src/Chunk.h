@@ -3,6 +3,8 @@
 #include <vector>
 #include <array>
 #include "Math.h"
+#include "VertexBuffer.h"
+#include "VertexArray.h"
 
 #define CHUNK_WIDTH 16
 #define CHUNK_HEIGHT 128
@@ -36,6 +38,9 @@ public:
 	BlockId blocks[CHUNK_SEGMENTS][CHUNK_WIDTH][CHUNK_SEGMENT_HEIGHT][CHUNK_WIDTH];
 	std::array<std::vector<std::array<float, 48>>, CHUNK_SEGMENTS> chunkMesh;
 	int chunkMeshSize;
+	VertexArray* m_vertexArray; // Todo: make ChunkRenderer for this kind of stuff
+	VertexBuffer* m_vertexBuffer;
+	bool updatedChunkMesh;
 	Chunk* next = nullptr;
 
 	friend class TerrainGenerator;

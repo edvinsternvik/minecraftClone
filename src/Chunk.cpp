@@ -30,9 +30,19 @@ Chunk::Chunk(int chunkX, int chunkZ) : chunkX(chunkX), chunkZ(chunkZ), next(null
 			}	
 		}
 	}
+
+	m_vertexArray = new VertexArray();
+	m_vertexArray->bind();
+
+	const int chunkVertexBufferAttributes[] = {3, 3, 2};
+	m_vertexBuffer = new VertexBuffer(chunkVertexBufferAttributes, 3);
+	m_vertexBuffer->unbind();
+	m_vertexArray->unbind();
 }
 
 Chunk::~Chunk() {
+	delete m_vertexArray;
+	delete m_vertexBuffer;
 }
 
 void Chunk::changeBlock(int x, int y, int z, BlockId blockId) {
@@ -111,6 +121,8 @@ void Chunk::generateChunkSegmentMesh(int index){
 	for(int i = 0; i < CHUNK_SEGMENTS; ++i) {
 		chunkMeshSize += getChunkSegmentMeshVerticiesCount(i);
 	}
+
+	updatedChunkMesh = true;
 }
 
 void Chunk::updateChunkMesh(int x, int y, int z){

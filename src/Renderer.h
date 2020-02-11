@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include "VertexBuffer.h"
+#include "VertexArray.h"
 #include "Shader.h"
 #include "TextureAtlas.h"
 
@@ -19,7 +20,6 @@ public:
 
 private:
 	Camera* m_camera = nullptr;
-	std::unique_ptr<VertexBuffer> chunkVertexBuffer;
 	std::unique_ptr<Shader> shader;
 	TextureAtlas* blockTextures;
 	unsigned int dataSize;

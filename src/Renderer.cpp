@@ -10,7 +10,6 @@
 #include "Camera.h"
 
 #include <vector>
-// #include <array>
 
 Renderer::Renderer() {
 	if(glewInit() != GLEW_OK) {
@@ -31,9 +30,6 @@ Renderer::Renderer() {
 	// const int crosshairVertexBufferAttributes[] = {3};
 	// crosshairVertexBuffer = std::make_unique<VertexBuffer>(crosshairVertexBufferData, 9, crosshairVertexBufferAttributes, 1);
 	// otherShader = std::make_unique<Shader>("assets/shaders/otherVertexShader.glsl", "assets/shaders/otherFragmentShader.glsl");
-
-	const int chunkVertexBufferAttributes[] = {3, 3, 2};
-	chunkVertexBuffer = std::make_unique<VertexBuffer>(chunkVertexBufferAttributes, 3);
 
 	shader = std::make_unique<Shader>("assets/shaders/vertexShader.glsl", "assets/shaders/fragmentShader.glsl");
 	shader->useShader();
@@ -65,15 +61,21 @@ void Renderer::render(World* world) {
 	Chunk* chunk = world->chunks;
 	while(chunk) {
 
-		if(chunk->getChunkMeshVerticiesCount() > 0) {	
+		if(chunk->getChunkMeshVerticiesCount() > 0) {
+			chunk->m_vertexArray->bind();
+			chunk->m_vertexBuffer->bind();
 
-			chunkVertexBuffer->setDataSize(chunk->getChunkMeshVerticiesCount());
+			if(chunk->updatedChunkMesh) {
+				
+				chunk->m_vertexBuffer->setDataSize(chunk->getChunkMeshVerticiesCount());
 
-			int offset = 0;
-			for(int i = 0; i < CHUNK_SEGMENTS; ++i) {
-				int vertexCount = chunk->getChunkSegmentMeshVerticiesCount(i);
-				chunkVertexBuffer->setSubData(chunk->getChunkSegmentData(i), vertexCount, offset);
-				offset += vertexCount;
+				int offset = 0;
+				for(int i = 0; i < CHUNK_SEGMENTS; ++i) {
+					int vertexCount = chunk->getChunkSegmentMeshVerticiesCount(i);
+					chunk->m_vertexBuffer->setSubData(chunk->getChunkSegmentData(i), vertexCount, offset);
+					offset += vertexCount;
+				}
+				chunk->updatedChunkMesh = false;
 			}
 
 			glDrawArrays(GL_TRIANGLES, 0, chunk->getChunkMeshVerticiesCount());
