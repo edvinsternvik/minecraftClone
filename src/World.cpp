@@ -95,7 +95,6 @@ void World::changeBlock(int x, int y, int z, BlockId blockId) {
 bool World::isSolid(int x, int y, int z) {
 	Chunk* chunk = getChunk(x, z);
 	if(chunk == nullptr) {
-		// std::cout << x << ", " << z << " : " << std::floor(x / (float)CHUNK_WIDTH) << ", " << std::floor(z / (float)CHUNK_WIDTH) << std::endl;
 		return true;
 	}
 
@@ -129,7 +128,7 @@ void World::deleteChunk(int x, int y) {
 
 			tail = tail->next;
 
-			delete temp;
+			m_terrainGenerator.addChunkToDeleteQueue(temp);
 		}
 		else {
 			before = tail;

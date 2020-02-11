@@ -11,17 +11,15 @@ public:
 	TerrainGenerator();
 	~TerrainGenerator();
 
-	void addChunkToQueue(Chunk* chunk) {
-		std::lock_guard<std::mutex> guard(m_mutex);
-		m_chunksToBeGenerated.push(chunk);
-	}
+	void addChunkToQueue(Chunk* chunk);
+	void addChunkToDeleteQueue(Chunk* chunk);
 
-	void generate() {
-		std::lock_guard<std::mutex> guard(m_mutex);
-		m_conditionVariable.notify_one(); // Unlocks generateTerrainThread
-	}
+	void generate();
 
 private:
+	void generateChunks();
+	void deleteChunks();
+
 	static void generateTerrainThreadFunction(TerrainGenerator* terrainGenerator);
 
 private:
@@ -29,6 +27,7 @@ private:
 	std::mutex m_mutex;
 	std::condition_variable m_conditionVariable;
 	std::queue<Chunk*> m_chunksToBeGenerated;
+	std::queue<Chunk*> m_chunksToBeDeleted;
 
 	bool m_ready = false;
 	bool m_close = false;
