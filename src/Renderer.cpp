@@ -7,6 +7,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "World.h"
+#include "ChunkRenderer.h"
 #include "Camera.h"
 
 #include <vector>
@@ -60,25 +61,25 @@ void Renderer::render(World* world) {
 	
 	Chunk* chunk = world->chunks;
 	while(chunk) {
+		ChunkRenderer* chunkRenderer = chunk->getChunkRenderer();
 
-		if(chunk->getChunkMeshVerticiesCount() > 0) {
-			chunk->m_vertexArray->bind();
-			chunk->m_vertexBuffer->bind();
+		if(chunkRenderer->getChunkMeshVerticiesCount() > 0) {
+			chunkRenderer->bind();
 
-			if(chunk->updatedChunkMesh) {
+			if(chunkRenderer->updatedChunkMesh) {
 				
-				chunk->m_vertexBuffer->setDataSize(chunk->getChunkMeshVerticiesCount());
+				chunkRenderer->m_vertexBuffer->setDataSize(chunkRenderer->getChunkMeshVerticiesCount());
 
 				int offset = 0;
 				for(int i = 0; i < CHUNK_SEGMENTS; ++i) {
-					int vertexCount = chunk->getChunkSegmentMeshVerticiesCount(i);
-					chunk->m_vertexBuffer->setSubData(chunk->getChunkSegmentData(i), vertexCount, offset);
+					int vertexCount = chunkRenderer->getChunkSegmentMeshVerticiesCount(i);
+					chunkRenderer->m_vertexBuffer->setSubData(chunkRenderer->getChunkSegmentData(i), vertexCount, offset);
 					offset += vertexCount;
 				}
-				chunk->updatedChunkMesh = false;
+				chunkRenderer->updatedChunkMesh = false;
 			}
 
-			glDrawArrays(GL_TRIANGLES, 0, chunk->getChunkMeshVerticiesCount());
+			glDrawArrays(GL_TRIANGLES, 0, chunkRenderer->getChunkMeshVerticiesCount());
 		}
 
 		chunk = chunk->next;

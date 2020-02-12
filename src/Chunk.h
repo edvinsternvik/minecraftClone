@@ -1,15 +1,14 @@
 #pragma once
 #include "Block.h"
-#include <vector>
-#include <array>
 #include "Math.h"
-#include "VertexBuffer.h"
-#include "VertexArray.h"
+#include <memory>
 
 #define CHUNK_WIDTH 16
 #define CHUNK_HEIGHT 128
 #define CHUNK_SEGMENT_HEIGHT CHUNK_WIDTH
 #define CHUNK_SEGMENTS CHUNK_HEIGHT / CHUNK_SEGMENT_HEIGHT
+
+class ChunkRenderer;
 
 class Chunk {
 public:
@@ -22,28 +21,18 @@ public:
 		return BlockManager::getBlock(blocks[segPos.w][segPos.x][segPos.y][segPos.z]);
 	}
 	void changeBlock(int x, int y, int z, BlockId blockId);
-
-	inline float* getChunkSegmentData(int index) { return &chunkMesh[index][0][0]; }
-	inline int getChunkSegmentMeshVerticiesCount(int index) const { return chunkMesh[index].size() * 6; }
-	inline int getChunkMeshVerticiesCount() const { return chunkMeshSize; }
-
-private:
-	void generateChunkMesh();
-	void generateChunkSegmentMesh(int index);
-	void updateChunkMesh(int x, int y, int z);
 	Vector4i calculateSegmentPosFromChunkPos(int x, int y, int z);
+	inline ChunkRenderer* const getChunkRenderer() const { return m_chunkRenderer.get(); }
 
 public:
 	const int chunkX, chunkZ;
-	BlockId blocks[CHUNK_SEGMENTS][CHUNK_WIDTH][CHUNK_SEGMENT_HEIGHT][CHUNK_WIDTH];
-	std::array<std::vector<std::array<float, 48>>, CHUNK_SEGMENTS> chunkMesh;
-	int chunkMeshSize;
-	VertexArray* m_vertexArray; // Todo: make ChunkRenderer for this kind of stuff
-	VertexBuffer* m_vertexBuffer;
-	bool updatedChunkMesh;
 	Chunk* next = nullptr;
 
-	friend class TerrainGenerator;
+private:
+	BlockId blocks[CHUNK_SEGMENTS][CHUNK_WIDTH][CHUNK_SEGMENT_HEIGHT][CHUNK_WIDTH];
+	std::unique_ptr<ChunkRenderer> m_chunkRenderer;
+
+
 	friend class World;
 
 };

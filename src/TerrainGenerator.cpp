@@ -1,5 +1,5 @@
 #include "TerrainGenerator.h"
-#include "Chunk.h"
+#include "ChunkRenderer.h"
 
 TerrainGenerator::TerrainGenerator() : m_generateTerrainThread(&TerrainGenerator::generateTerrainThreadFunction, this) {
 
@@ -33,7 +33,7 @@ void TerrainGenerator::generateChunks() {
 		Chunk* chunk = m_chunksToBeGenerated.front();
 		m_chunksToBeGenerated.pop();
 		
-		if(chunk) chunk->generateChunkMesh();
+		if(chunk) chunk->getChunkRenderer()->generateChunkMesh();
 	}
 }
 
