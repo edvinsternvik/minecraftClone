@@ -179,10 +179,10 @@ void World::generateChunksAroundPlayer() {
 
 					int worldX = chunkX * 16, worldZ = chunkZ * 16;
 
-					Chunk* chunk1 = getChunk(worldX - 1, worldZ);
-					Chunk* chunk2 = getChunk(worldX, worldZ - 1);
-					Chunk* chunk3 = getChunk(worldX + 1, worldZ);
-					Chunk* chunk4 = getChunk(worldX, worldZ + 1);
+					Chunk* chunk1 = getChunk(worldX - CHUNK_WIDTH, worldZ);
+					Chunk* chunk2 = getChunk(worldX, worldZ - CHUNK_WIDTH);
+					Chunk* chunk3 = getChunk(worldX + CHUNK_WIDTH, worldZ);
+					Chunk* chunk4 = getChunk(worldX, worldZ + CHUNK_WIDTH);
 
 					if(chunk1 != nullptr) m_terrainGenerator.addChunkToQueue(chunk1);
 					if(chunk2 != nullptr) m_terrainGenerator.addChunkToQueue(chunk2);

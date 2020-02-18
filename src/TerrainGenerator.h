@@ -17,8 +17,8 @@ public:
 	void generate();
 
 private:
-	void generateChunks();
-	void deleteChunks();
+	void generateChunks(std::queue<Chunk*>& chunksToBeGenerated);
+	void deleteChunks(std::queue<Chunk*>& chunksToBeDeleted);
 
 	static void generateTerrainThreadFunction(TerrainGenerator* terrainGenerator);
 
