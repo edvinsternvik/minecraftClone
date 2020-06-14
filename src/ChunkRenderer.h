@@ -16,7 +16,7 @@ public:
 
 private:
 
-	inline float* getChunkSegmentData(int index) { return &chunkMesh[index][0][0]; }
+	inline unsigned int* getChunkSegmentData(int index) { return &chunkMesh[index][0][0]; }
 	inline int getChunkSegmentMeshVerticiesCount(int index) const { return chunkMesh[index].size() * 6; }
 	inline int getChunkMeshVerticiesCount() const { return chunkMeshSize; }
 
@@ -25,7 +25,7 @@ private:
 private:
 	Chunk* const m_chunk;
 
-	std::array<std::vector<std::array<float, 48>>, CHUNK_SEGMENTS> chunkMesh;
+	std::array<std::vector<std::array<unsigned int, 6>>, CHUNK_SEGMENTS> chunkMesh;
 	int chunkMeshSize;
 
 	VertexArray* m_vertexArray;

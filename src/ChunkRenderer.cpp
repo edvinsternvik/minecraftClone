@@ -5,8 +5,8 @@ ChunkRenderer::ChunkRenderer(Chunk* chunk) : m_chunk(chunk), chunkMeshSize(0) {
 	m_vertexArray = new VertexArray();
 	m_vertexArray->bind();
 
-	const int chunkVertexBufferAttributes[] = {3, 3, 2};
-	m_vertexBuffer = new VertexBuffer(chunkVertexBufferAttributes, 3);
+	const int chunkVertexBufferAttributes[] = {1};
+	m_vertexBuffer = new VertexBuffer(chunkVertexBufferAttributes, 1);
 	m_vertexBuffer->unbind();
 	m_vertexArray->unbind();
 }
@@ -47,19 +47,19 @@ void ChunkRenderer::generateChunkSegmentMesh(int index){
 
 				if(block->getBlockType() == BlockType::Solid) {
 
-					if(!world->isSolid(worldX, y, worldZ + 1)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Front, Vector3(worldX, y, worldZ), block->getBlockId()));
-					if(!world->isSolid(worldX, y, worldZ - 1)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Back, Vector3(worldX, y, worldZ),  block->getBlockId()));
-					if(!world->isSolid(worldX - 1, y, worldZ)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Left, Vector3(worldX, y, worldZ),  block->getBlockId()));
-					if(!world->isSolid(worldX + 1, y, worldZ)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Right, Vector3(worldX, y, worldZ), block->getBlockId()));
-					if(!world->isSolid(worldX, y + 1, worldZ)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Top, Vector3(worldX, y, worldZ),   block->getBlockId()));
-					if(!world->isSolid(worldX, y - 1, worldZ)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Down, Vector3(worldX, y, worldZ),  block->getBlockId()));
+					if(!world->isSolid(worldX, y, worldZ + 1)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Front, Vector3(x, y, z), block->getBlockId()));
+					if(!world->isSolid(worldX, y, worldZ - 1)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Back , Vector3(x, y, z), block->getBlockId()));
+					if(!world->isSolid(worldX - 1, y, worldZ)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Left , Vector3(x, y, z), block->getBlockId()));
+					if(!world->isSolid(worldX + 1, y, worldZ)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Right, Vector3(x, y, z), block->getBlockId()));
+					if(!world->isSolid(worldX, y + 1, worldZ)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Top  , Vector3(x, y, z), block->getBlockId()));
+					if(!world->isSolid(worldX, y - 1, worldZ)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Down , Vector3(x, y, z), block->getBlockId()));
 				}
 				else if(block->getBlockType() == BlockType::Transparent) {
 					if(block->getBlockId() == BlockId::Tallgrass) {
-						segmentMesh->push_back(BlockModelData::getFoliageData(BlockSide::Front, Vector3(worldX, y, worldZ), block->getBlockId()));
-						segmentMesh->push_back(BlockModelData::getFoliageData(BlockSide::Right, Vector3(worldX, y, worldZ), block->getBlockId()));
-						segmentMesh->push_back(BlockModelData::getFoliageData(BlockSide::Back, Vector3(worldX, y, worldZ), block->getBlockId()));
-						segmentMesh->push_back(BlockModelData::getFoliageData(BlockSide::Left, Vector3(worldX, y, worldZ), block->getBlockId()));
+						segmentMesh->push_back(BlockModelData::getFoliageData(BlockSide::Front, Vector3(x, y, z), block->getBlockId()));
+						segmentMesh->push_back(BlockModelData::getFoliageData(BlockSide::Right, Vector3(x, y, z), block->getBlockId()));
+						segmentMesh->push_back(BlockModelData::getFoliageData(BlockSide::Back, Vector3(x, y, z), block->getBlockId()));
+						segmentMesh->push_back(BlockModelData::getFoliageData(BlockSide::Left, Vector3(x, y, z), block->getBlockId()));
 					}
 				}
 			}

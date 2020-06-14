@@ -13,21 +13,18 @@ enum class BlockType {
 
 class Block {
 public:
-	Block(BlockId blockId, BlockType blockType, std::array<unsigned int, 12> texCoords, float miningSpeed);
+	Block(BlockId blockId, BlockType blockType, std::array<unsigned int, 6> textureIndicies, float miningSpeed);
 
 	inline BlockId getBlockId() const { return blockId; }
 	inline BlockType getBlockType() const { return blockType; }
-	inline Vector2i getTexture(BlockSide blockSide) const { 
-		int index = (int)blockSide * 2;
-		return Vector2i(m_textureCoords[index], m_textureCoords[index + 1]);
+	inline unsigned int getTextureId(const BlockSide& blockSide) const { 
+		return m_textureIndicies[(unsigned int)blockSide];
 	}
-	inline int getTextureX(BlockSide blockSide) const { return m_textureCoords[((int)blockSide) * 2]; }
-	inline int getTextureY(BlockSide blockSide) const { return m_textureCoords[((int)blockSide) * 2 + 1]; }
 
 private:
 	const BlockId blockId;
 	const BlockType blockType;
-	std::array<unsigned int, 12> m_textureCoords;
+	std::array<unsigned int, 6> m_textureIndicies;
 	const float miningSpeed;
 };
 

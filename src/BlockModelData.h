@@ -8,6 +8,6 @@ enum BlockSide {
 
 class BlockModelData {
 public:
-	static std::array<float, 48> getBlockData(BlockSide cubeSide, Vector3 position, int blockId);
-	static std::array<float, 48> getFoliageData(BlockSide cubeSide, Vector3 position, int blockId);
+	static std::array<unsigned int, 6> getBlockData(const BlockSide& cubeSide, const Vector3& position, const int& blockId);
+	static std::array<unsigned int, 6> getFoliageData(const BlockSide& cubeSide, const Vector3& position, const int& blockId);
 };

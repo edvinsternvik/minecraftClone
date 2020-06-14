@@ -79,6 +79,7 @@ void Renderer::render(World* world) {
 				chunkRenderer->updatedChunkMesh = false;
 			}
 
+			shader->setUniform2i("u_chunkPosition", chunk->chunkX, chunk->chunkZ);
 			glDrawArrays(GL_TRIANGLES, 0, chunkRenderer->getChunkMeshVerticiesCount());
 		}
 

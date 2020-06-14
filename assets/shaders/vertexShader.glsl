@@ -1,33 +1,33 @@
 #version 330 core
-layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec3 aNormal;
-layout (location = 2) in vec2 aTexture;
+layout (location = 0) in uint data;
 
 uniform mat4 u_projection;
 uniform mat4 u_view;
-// uniform vec3 u_offset[4096];
+uniform ivec2 u_chunkPosition;
 
-// out vec3 lightingColor;
 out vec2 texCoords;
 out float light;
 
 void main() {
-	texCoords = aTexture;
+	float x = float((data & 0xF8000000u) >> 27);
+	float y = float((data & 0x7F80000u) >> 19);
+	float z = float((data & 0x7C000u) >> 14);
+	uint facingDirection = (data & 0x3800u) >> 11;
+	uint textureId = (data & 0x7FCu) >> 2;
+	uint textureOffsetIndex = data & 0x3u;
 
-	// vec4 fragPos = vec4(aPos + u_offset[gl_InstanceID], 1.0);
-	vec4 fragPos = vec4(aPos, 1.0);
-	// vec3 normal = normalize(mat3(transpose(inverse(u_model[gl_InstanceID]))) * aNormal);  
+	vec3 position = vec3(x + u_chunkPosition.x * 16, y, z + u_chunkPosition.y * 16);
+	vec4 fragPos = vec4(position, 1.0);
 
-	// vec3 lightPos = vec3(0.0, 0.0, 0.0);
-	// vec3 lightDir = normalize(lightPos - vec3(fragPos));
+	float textureX = float(textureId % 32u);
+	float textureY = 0.0;
+	float textureOffsetX = textureOffsetIndex == 0u || textureOffsetIndex == 3u ? 0.0 : 1.0;
+	float textureOffsetY = textureOffsetIndex < 2u ? 0.0 : 1.0;
+	texCoords = vec2(textureX + textureOffsetX, textureY + textureOffsetY);
 
-	// float lightAngle = max(dot(normal, lightDir), 0.0) * 0.5;
-
-	// lightingColor = vec3(1.0, 1.0, 1.0) * (lightAngle + 0.25);
-
-	light = 1.0;
-	if(aNormal.y == 0.0) light = 0.8;
-	if(aNormal.y == -1.0) light = 0.5;
+	light = 0.8;
+	if(facingDirection == 4u) light = 1.0;
+	if(facingDirection == 5u) light = 0.5;
 
 	gl_Position = u_projection * u_view * fragPos;
 }

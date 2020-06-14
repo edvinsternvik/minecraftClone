@@ -6,7 +6,7 @@ VertexBuffer::VertexBuffer(const float* verticies, int verticiesCount, const int
 	init(attributes, attributesCount);
 
 	bind();
-	glBufferData(GL_ARRAY_BUFFER, verticiesCount * m_attributesStride * sizeof(float), verticies, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, verticiesCount * m_attributesStride * sizeof(unsigned int), verticies, GL_STATIC_DRAW);
 	// unbind();
 }
 
@@ -28,19 +28,19 @@ void VertexBuffer::unbind() {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void VertexBuffer::setData(const float* verticies, int verticiesCount) {
+void VertexBuffer::setData(const unsigned int* verticies, int verticiesCount) {
 	// bind();
-	glBufferData(GL_ARRAY_BUFFER, verticiesCount * m_attributesStride * sizeof(float), verticies, GL_STREAM_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, verticiesCount * m_attributesStride * sizeof(unsigned int), verticies, GL_STREAM_DRAW);
 }
 
 void VertexBuffer::setDataSize(int verticiesCount) {
 	// bind();
-	glBufferData(GL_ARRAY_BUFFER, verticiesCount * m_attributesStride * sizeof(float), NULL, GL_STREAM_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, verticiesCount * m_attributesStride * sizeof(unsigned int), NULL, GL_STREAM_DRAW);
 }
 
-void VertexBuffer::setSubData(const float* verticies, int verticiesCount, int vertexOffset) {
+void VertexBuffer::setSubData(const unsigned int* verticies, int verticiesCount, int vertexOffset) {
 	// bind();
-	glBufferSubData(GL_ARRAY_BUFFER, vertexOffset * m_attributesStride * sizeof(float), verticiesCount * m_attributesStride * sizeof(float), verticies);
+	glBufferSubData(GL_ARRAY_BUFFER, vertexOffset * m_attributesStride * sizeof(unsigned int), verticiesCount * m_attributesStride * sizeof(unsigned int), verticies);
 }
 
 void VertexBuffer::init(const int attributes[], int attributesCount) {
@@ -55,9 +55,9 @@ void VertexBuffer::init(const int attributes[], int attributesCount) {
 	int total = 0;
 	for(int i = 0; i < attributesCount; ++i) {
 		glEnableVertexAttribArray(i);
-		glVertexAttribPointer(i, attributes[i], GL_FLOAT, GL_FALSE, m_attributesStride * sizeof(float), (void*)total);
+		glVertexAttribPointer(i, attributes[i], GL_FLOAT, GL_FALSE, m_attributesStride * sizeof(unsigned int), (void*)total);
 
-		total += attributes[i] * sizeof(float);
+		total += attributes[i] * sizeof(unsigned int);
 	}
 
 	// unbind();

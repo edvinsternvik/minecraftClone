@@ -1,137 +1,121 @@
 #include "BlockModelData.h"
 #include "Block.h"
 
-std::array<float, 48> BlockModelData::getBlockData(BlockSide cubeSide, Vector3 position, int blockId) {
-	BlockId id = (BlockId)blockId;
-	Block block = BlockManager::getBlock(id);
-
-	Vector2i textureCoords = block.getTexture(cubeSide);
-	float textureX = textureCoords.x, textureY = textureCoords.y;
-	float tBegin = 0.001, tEnd = 0.999; // Texture offsets
-	float pBegin = 0.0, pEnd = 1.0; // Position offsets
-	if(cubeSide == BlockSide::Front) {
-		return {
-			pBegin + position.x, pBegin + position.y, pEnd + position.z, 0.0, 0.0, 1.0, tBegin + textureX, tBegin + textureY,
-			pEnd   + position.x, pBegin + position.y, pEnd + position.z, 0.0, 0.0, 1.0, tEnd   + textureX, tBegin + textureY,
-			pEnd   + position.x, pEnd   + position.y, pEnd + position.z, 0.0, 0.0, 1.0, tEnd   + textureX, tEnd   + textureY,
-
-			pEnd   + position.x, pEnd   + position.y, pEnd + position.z, 0.0, 0.0, 1.0, tEnd   + textureX, tEnd   + textureY,
-			pBegin + position.x, pEnd   + position.y, pEnd + position.z, 0.0, 0.0, 1.0, tBegin + textureX, tEnd   + textureY,
-			pBegin + position.x, pBegin + position.y, pEnd + position.z, 0.0, 0.0, 1.0, tBegin + textureX, tBegin + textureY
-		};
-	}
-	else if(cubeSide == BlockSide::Back) {
-		return {
-			pEnd   + position.x, pEnd   + position.y, pBegin + position.z, 0.0, 0.0, -1.0, tEnd   + textureX, tEnd   + textureY,
-			pEnd   + position.x, pBegin + position.y, pBegin + position.z, 0.0, 0.0, -1.0, tEnd   + textureX, tBegin + textureY,
-			pBegin + position.x, pBegin + position.y, pBegin + position.z, 0.0, 0.0, -1.0, tBegin + textureX, tBegin + textureY,
-
-			pBegin + position.x, pBegin + position.y, pBegin + position.z, 0.0, 0.0, -1.0, tBegin + textureX, tBegin + textureY,
-			pBegin + position.x, pEnd   + position.y, pBegin + position.z, 0.0, 0.0, -1.0, tBegin + textureX, tEnd   + textureY,
-			pEnd   + position.x, pEnd   + position.y, pBegin + position.z, 0.0, 0.0, -1.0, tEnd   + textureX, tEnd   + textureY
-		};
-	}
-	else if(cubeSide == BlockSide::Left) {
-		return {
-			pBegin + position.x, pBegin + position.y, pBegin + position.z, -1.0, 0.0, 0.0, tBegin + textureX, tBegin + textureY,
-			pBegin + position.x, pBegin + position.y, pEnd   + position.z, -1.0, 0.0, 0.0, tEnd   + textureX, tBegin + textureY,
-			pBegin + position.x, pEnd   + position.y, pEnd   + position.z, -1.0, 0.0, 0.0, tEnd + textureX, tEnd   + textureY,
-
-			pBegin + position.x, pEnd   + position.y, pEnd   + position.z, -1.0, 0.0, 0.0, tEnd   + textureX, tEnd   + textureY,
-			pBegin + position.x, pEnd   + position.y, pBegin + position.z, -1.0, 0.0, 0.0, tBegin + textureX, tEnd   + textureY,
-			pBegin + position.x, pBegin + position.y, pBegin + position.z, -1.0, 0.0, 0.0, tBegin + textureX, tBegin + textureY
-		};
-	}
-	else if(cubeSide == BlockSide::Right) {
-		return {
-			pEnd   + position.x, pEnd   + position.y, pEnd   + position.z, 1.0, 0.0, 0.0, tEnd   + textureX, tEnd   + textureY,
-			pEnd   + position.x, pBegin + position.y, pEnd   + position.z, 1.0, 0.0, 0.0, tEnd   + textureX, tBegin + textureY,
-			pEnd   + position.x, pBegin + position.y, pBegin + position.z, 1.0, 0.0, 0.0, tBegin + textureX, tBegin + textureY,
-
-			pEnd   + position.x, pBegin + position.y, pBegin + position.z, 1.0, 0.0, 0.0, tBegin + textureX, tBegin + textureY,
-			pEnd   + position.x, pEnd   + position.y, pBegin + position.z, 1.0, 0.0, 0.0, tBegin + textureX, tEnd   + textureY,
-			pEnd   + position.x, pEnd   + position.y, pEnd   + position.z, 1.0, 0.0, 0.0, 1.0f + textureX, tEnd   + textureY
-		};
-	}
-	else if(cubeSide == BlockSide::Top) {
-		return {
-			pBegin + position.x, pEnd   + position.y, pEnd   + position.z, 0.0, 1.0, 0.0, tBegin + textureX, tBegin + textureY,
-			pEnd   + position.x, pEnd   + position.y, pEnd   + position.z, 0.0, 1.0, 0.0, tEnd   + textureX, tBegin + textureY,
-			pEnd   + position.x, pEnd   + position.y, pBegin + position.z, 0.0, 1.0, 0.0, tEnd   + textureX, tEnd   + textureY,
-
-			pEnd   + position.x, pEnd   + position.y, pBegin + position.z, 0.0, 1.0, 0.0, tEnd   + textureX, tEnd   + textureY,
-			pBegin + position.x, pEnd   + position.y, pBegin + position.z, 0.0, 1.0, 0.0, tBegin + textureX, tEnd   + textureY,
-			pBegin + position.x, pEnd   + position.y, pEnd   + position.z, 0.0, 1.0, 0.0, tBegin + textureX, tBegin + textureY
-		};
-	}
-	else {
-		return {
-			pEnd   + position.x, pBegin + position.y, pBegin + position.z, 0.0, -1.0, 0.0, tEnd   + textureX, tEnd   + textureY,
-			pEnd   + position.x, pBegin + position.y, pEnd   + position.z, 0.0, -1.0, 0.0, tEnd   + textureX, tBegin + textureY,
-			pBegin + position.x, pBegin + position.y, pEnd   + position.z, 0.0, -1.0, 0.0, tBegin + textureX, tBegin + textureY,
-
-			pBegin + position.x, pBegin + position.y, pEnd   + position.z, 0.0, -1.0, 0.0, tBegin + textureX, tBegin + textureY,
-			pBegin + position.x, pBegin + position.y, pBegin + position.z, 0.0, -1.0, 0.0, tBegin + textureX, tEnd   + textureY,
-			pEnd   + position.x, pBegin + position.y, pBegin + position.z, 0.0, -1.0, 0.0, tEnd   + textureX, tEnd   + textureY
-		};
-	}
+// Gets the position with the bits layed out in the format: xxxxxyyyyyyyyzzzzz00000000000000 (5x - 8y - 5z - 0)
+unsigned int getPositionBits(const unsigned int& x, const unsigned int& y, const unsigned int& z) {
+	return (x << 27) + (y << 19) + (z << 14);
 }
 
-std::array<float, 48> BlockModelData::getFoliageData(BlockSide cubeSide, Vector3 position, int blockId) {
+// Gets the block data layed out in the format: positionX(5 bits), positionY(8 bits), positionZ(5 bits), blockSide(3 bits), textureId(9 bits), textureOffsetIndex(2) bits
+// position.x needs to be between 0 and 15, position.y between 0 and 255, position.z between 0 and 15
+std::array<unsigned int, 6> BlockModelData::getBlockData(const BlockSide& cubeSide, const Vector3& position, const int& blockId) {
 	BlockId id = (BlockId)blockId;
-	Block block = BlockManager::getBlock(id);
+	const Block& block = BlockManager::getBlock(id);
 
-	Vector2i textureCoords = block.getTexture((BlockSide)0);
-	float textureX = textureCoords.x, textureY = textureCoords.y;
-
-	float tBegin = 0.001, tEnd = 0.999; // Texture offsets
-	float pBegin = 0.0, pEnd = 1.0; // Position offsets
-
-	if(cubeSide == BlockSide::Front) {
-		return {
-			pBegin + position.x, pBegin + position.y, pEnd   + position.z, 0.0, 0.0, 1.0, tBegin + textureX, tBegin + textureY,
-			pEnd   + position.x, pBegin + position.y, pBegin + position.z, 0.0, 0.0, 1.0, tEnd   + textureX, tBegin + textureY,
-			pEnd   + position.x, pEnd   + position.y, pBegin + position.z, 0.0, 0.0, 1.0, tEnd   + textureX, tEnd   + textureY,
-
-			pEnd   + position.x, pEnd   + position.y, pBegin + position.z, 0.0, 0.0, 1.0, tEnd   + textureX, tEnd   + textureY,
-			pBegin + position.x, pEnd   + position.y, pEnd   + position.z, 0.0, 0.0, 1.0, tBegin + textureX, tEnd   + textureY,
-			pBegin + position.x, pBegin + position.y, pEnd   + position.z, 0.0, 0.0, 1.0, tBegin + textureX, tBegin + textureY
+	unsigned int x = position.x, y = position.y, z = position.z;
+	unsigned int sideBytes = (unsigned int)cubeSide << 11;
+	unsigned int textureIdBits = block.getTextureId(cubeSide) << 2;
+	unsigned int sideAndTextureBits = sideBytes | textureIdBits;
+	switch(cubeSide) {
+	case BlockSide::Front:
+		return { getPositionBits(x    , y    , z + 1) | sideAndTextureBits | 0,
+				 getPositionBits(x + 1, y    , z + 1) | sideAndTextureBits | 1,
+				 getPositionBits(x + 1, y + 1, z + 1) | sideAndTextureBits | 2,
+				 getPositionBits(x + 1, y + 1, z + 1) | sideAndTextureBits | 2,
+				 getPositionBits(x    , y + 1, z + 1) | sideAndTextureBits | 3,
+				 getPositionBits(x    , y    , z + 1) | sideAndTextureBits | 0,
+		};
+	case BlockSide::Back:
+		return { getPositionBits(x + 1, y    , z    ) | sideAndTextureBits | 0,
+				 getPositionBits(x    , y    , z    ) | sideAndTextureBits | 1,
+				 getPositionBits(x    , y + 1, z    ) | sideAndTextureBits | 2,
+				 getPositionBits(x    , y + 1, z    ) | sideAndTextureBits | 2,
+				 getPositionBits(x + 1, y + 1, z    ) | sideAndTextureBits | 3,
+				 getPositionBits(x + 1, y    , z    ) | sideAndTextureBits | 0,
+		};
+	case BlockSide::Left:
+		return { getPositionBits(x    , y    , z    ) | sideAndTextureBits | 0,
+				 getPositionBits(x    , y    , z + 1) | sideAndTextureBits | 1,
+				 getPositionBits(x    , y + 1, z + 1) | sideAndTextureBits | 2,
+				 getPositionBits(x    , y + 1, z + 1) | sideAndTextureBits | 2,
+				 getPositionBits(x    , y + 1, z    ) | sideAndTextureBits | 3,
+				 getPositionBits(x    , y    , z    ) | sideAndTextureBits | 0,
+		};
+	case BlockSide::Right:
+		return { getPositionBits(x + 1, y    , z + 1) | sideAndTextureBits | 0,
+				 getPositionBits(x + 1, y    , z    ) | sideAndTextureBits | 1,
+				 getPositionBits(x + 1, y + 1, z    ) | sideAndTextureBits | 2,
+				 getPositionBits(x + 1, y + 1, z    ) | sideAndTextureBits | 2,
+				 getPositionBits(x + 1, y + 1, z + 1) | sideAndTextureBits | 3,
+				 getPositionBits(x + 1, y    , z + 1) | sideAndTextureBits | 0,
+		};
+	case BlockSide::Top:
+		return { getPositionBits(x    , y + 1, z + 1) | sideAndTextureBits | 0,
+				 getPositionBits(x + 1, y + 1, z + 1) | sideAndTextureBits | 1,
+				 getPositionBits(x + 1, y + 1, z    ) | sideAndTextureBits | 2,
+				 getPositionBits(x + 1, y + 1, z    ) | sideAndTextureBits | 2,
+				 getPositionBits(x    , y + 1, z    ) | sideAndTextureBits | 3,
+				 getPositionBits(x    , y + 1, z + 1) | sideAndTextureBits | 0,
+		};
+	case BlockSide::Down:
+		return { getPositionBits(x    , y    , z    ) | sideAndTextureBits | 0,
+				 getPositionBits(x + 1, y    , z    ) | sideAndTextureBits | 1,
+				 getPositionBits(x + 1, y    , z + 1) | sideAndTextureBits | 2,
+				 getPositionBits(x + 1, y    , z + 1) | sideAndTextureBits | 2,
+				 getPositionBits(x    , y    , z + 1) | sideAndTextureBits | 3,
+				 getPositionBits(x    , y    , z    ) | sideAndTextureBits | 0,
 		};
 	}
-	else if(cubeSide == BlockSide::Right) {
-		return {
-			pBegin + position.x, pBegin + position.y, pBegin + position.z, 0.0, 0.0, 1.0, tBegin + textureX, tBegin + textureY,
-			pEnd   + position.x, pBegin + position.y, pEnd   + position.z, 0.0, 0.0, 1.0, tEnd   + textureX, tBegin + textureY,
-			pEnd   + position.x, pEnd   + position.y, pEnd   + position.z, 0.0, 0.0, 1.0, tEnd   + textureX, tEnd   + textureY,
+	return {0,0,0,0,0,0};
+}
 
-			pEnd   + position.x, pEnd   + position.y, pEnd  + position.z, 0.0, 0.0, 1.0, tEnd   + textureX, tEnd   + textureY,
-			pBegin + position.x, pEnd   + position.y, pBegin + position.z, 0.0, 0.0, 1.0, tBegin + textureX, tEnd   + textureY,
-			pBegin + position.x, pBegin + position.y, pBegin + position.z, 0.0, 0.0, 1.0, tBegin + textureX, tBegin + textureY
+std::array<unsigned int, 6> BlockModelData::getFoliageData(const BlockSide& cubeSide, const Vector3& position, const int& blockId) {
+	BlockId id = (BlockId)blockId;
+	const Block& block = BlockManager::getBlock(id);
+
+	unsigned int x = position.x, y = position.y, z = position.z;
+	unsigned int sideBytes = (unsigned int)cubeSide << 11;
+	unsigned int textureIdBits = block.getTextureId(cubeSide) << 2;
+	unsigned int sideAndTextureBits = sideBytes | textureIdBits;
+	switch(cubeSide) {
+	case BlockSide::Front:
+		return { getPositionBits(x    , y    , z + 1) | sideAndTextureBits | 0,
+				 getPositionBits(x + 1, y    , z    ) | sideAndTextureBits | 1,
+				 getPositionBits(x + 1, y + 1, z    ) | sideAndTextureBits | 2,
+				 getPositionBits(x + 1, y + 1, z    ) | sideAndTextureBits | 2,
+				 getPositionBits(x    , y + 1, z + 1) | sideAndTextureBits | 3,
+				 getPositionBits(x    , y    , z + 1) | sideAndTextureBits | 0,
+		};
+	case BlockSide::Back:
+		return { getPositionBits(x + 1, y    , z    ) | sideAndTextureBits | 0,
+				 getPositionBits(x    , y    , z + 1) | sideAndTextureBits | 1,
+				 getPositionBits(x    , y + 1, z + 1) | sideAndTextureBits | 2,
+				 getPositionBits(x    , y + 1, z + 1) | sideAndTextureBits | 2,
+				 getPositionBits(x + 1, y + 1, z    ) | sideAndTextureBits | 3,
+				 getPositionBits(x + 1, y    , z    ) | sideAndTextureBits | 0,
+		};
+	case BlockSide::Left:
+		return { getPositionBits(x    , y    , z    ) | sideAndTextureBits | 0,
+				 getPositionBits(x + 1, y    , z + 1) | sideAndTextureBits | 1,
+				 getPositionBits(x + 1, y + 1, z + 1) | sideAndTextureBits | 2,
+				 getPositionBits(x + 1, y + 1, z + 1) | sideAndTextureBits | 2,
+				 getPositionBits(x    , y + 1, z    ) | sideAndTextureBits | 3,
+				 getPositionBits(x    , y    , z    ) | sideAndTextureBits | 0,
+		};
+	case BlockSide::Right:
+		return { getPositionBits(x + 1, y    , z + 1) | sideAndTextureBits | 0,
+				 getPositionBits(x    , y    , z    ) | sideAndTextureBits | 1,
+				 getPositionBits(x    , y + 1, z    ) | sideAndTextureBits | 2,
+				 getPositionBits(x    , y + 1, z    ) | sideAndTextureBits | 2,
+				 getPositionBits(x + 1, y + 1, z + 1) | sideAndTextureBits | 3,
+				 getPositionBits(x + 1, y    , z + 1) | sideAndTextureBits | 0,
+		};
+	case BlockSide::Top:
+		return { 0,0,0,0,0,0
+		};
+	case BlockSide::Down:
+		return { 0,0,0,0,0,0
 		};
 	}
-	else if(cubeSide == BlockSide::Back) {
-		return {
-			pBegin + position.x, pBegin + position.y, pBegin + position.z, 0.0, 0.0, 1.0, tBegin + textureX, tBegin + textureY,
-			pBegin + position.x, pEnd   + position.y, pBegin + position.z, 0.0, 0.0, 1.0, tBegin + textureX, tEnd   + textureY,
-			pEnd   + position.x, pEnd   + position.y, pEnd  + position.z, 0.0, 0.0, 1.0, tEnd   + textureX, tEnd   + textureY,
-
-			pEnd   + position.x, pEnd   + position.y, pEnd   + position.z, 0.0, 0.0, 1.0, tEnd   + textureX, tEnd   + textureY,
-			pEnd   + position.x, pBegin + position.y, pEnd   + position.z, 0.0, 0.0, 1.0, tEnd   + textureX, tBegin + textureY,
-			pBegin + position.x, pBegin + position.y, pBegin + position.z, 0.0, 0.0, 1.0, tBegin + textureX, tBegin + textureY
-
-		};
-	}
-	else {
-		return {
-			pBegin + position.x, pBegin + position.y, pEnd   + position.z, 0.0, 0.0, 1.0, tBegin + textureX, tBegin + textureY,
-			pBegin + position.x, pEnd   + position.y, pEnd   + position.z, 0.0, 0.0, 1.0, tBegin + textureX, tEnd   + textureY,
-			pEnd   + position.x, pEnd   + position.y, pBegin + position.z, 0.0, 0.0, 1.0, tEnd   + textureX, tEnd   + textureY,
-
-			pEnd   + position.x, pEnd   + position.y, pBegin + position.z, 0.0, 0.0, 1.0, tEnd   + textureX, tEnd   + textureY,
-			pEnd   + position.x, pBegin + position.y, pBegin + position.z, 0.0, 0.0, 1.0, tEnd   + textureX, tBegin + textureY,
-			pBegin + position.x, pBegin + position.y, pEnd   + position.z, 0.0, 0.0, 1.0, tBegin + textureX, tBegin + textureY
-
-		};
-	}
-
+	return {0,0,0,0,0,0};
 }

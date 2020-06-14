@@ -1,18 +1,18 @@
 #include "Block.h"
 
-Block::Block(BlockId blockId, BlockType blockType, std::array<unsigned int, 12> texCoords, float miningSpeed) : 
+Block::Block(BlockId blockId, BlockType blockType, std::array<unsigned int, 6> textureIndicies, float miningSpeed) : 
 	blockId(blockId), blockType(blockType), miningSpeed(miningSpeed) {
-		for(int i = 0; i < 12; ++i) {
-			m_textureCoords[i] = texCoords[i];
+		for(int i = 0; i < 6; ++i) {
+			m_textureIndicies[i] = textureIndicies[i];
 		}
 }
 
 const Block BlockManager::Blocks[BlockCount] {
-	Block(BlockId::Air, BlockType::Transparent, {0,0, 0,0, 0,0, 0,0, 0,0, 0,0}, 0.0f), 
-	Block(BlockId::Grass, BlockType::Solid, {3,0, 3,0, 3,0, 3,0, 0,0, 2,0} , 1.0f), 
-	Block(BlockId::Stone, BlockType::Solid, {1,0, 1,0, 1,0, 1,0, 1,0, 1,0}, 1.0f), 
-	Block(BlockId::Dirt, BlockType::Solid, {2,0, 2,0, 2,0, 2,0, 2,0, 2,0}, 2.0f),
-	Block(BlockId::Tallgrass, BlockType::Transparent, {4,0, 0,0, 0,0, 0,0, 0,0, 0,0}, 0.0f)
+	Block(BlockId::Air, BlockType::Transparent, {0,0,0,0,0,0}, 0.0f), 
+	Block(BlockId::Grass, BlockType::Solid, {3,3,3,3,0,2} , 1.0f), 
+	Block(BlockId::Stone, BlockType::Solid, {1,1,1,1,1,1}, 1.0f), 
+	Block(BlockId::Dirt, BlockType::Solid, {2,2,2,2,2,2}, 2.0f),
+	Block(BlockId::Tallgrass, BlockType::Transparent, {4,4,4,4,4,4}, 0.0f)
 };
 
 const Block& BlockManager::getBlock(BlockId& blockId) {

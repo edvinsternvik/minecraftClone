@@ -11,9 +11,9 @@ public:
 	void bind();
 	void unbind();
 
-	void setData(const float* verticies, int verticiesCount);
+	void setData(const unsigned int* verticies, int verticiesCount);
 	void setDataSize(int verticiesCount);
-	void setSubData(const float* verticies, int verticiesCount, int vertexOffset);
+	void setSubData(const unsigned int* verticies, int verticiesCount, int vertexOffset);
 
 private:
 	void init(const int attributes[], int attributesCount);

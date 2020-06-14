@@ -1,7 +1,6 @@
 #version 330 core
 out vec4 FragColor;
 
-// in vec3 lightingColor;
 in vec2 texCoords;
 in float light;
 
