@@ -30,7 +30,7 @@ private:
 
 class BlockManager {
 public:
-	static const Block& getBlock(BlockId& blockId);
+	static const Block& getBlock(const BlockId& blockId);
 
 public:
 	static const unsigned int BlockCount = 5; 

@@ -31,7 +31,7 @@ void World::init() {
 	for(GameObject* go : gameObjects) {
 		go->init();
 	}
-	
+
 	Chunk* tail = chunks;
 	while(tail) {
 		tail->getChunkRenderer()->generateChunkMesh();
@@ -113,6 +113,9 @@ Chunk* World::createChunk(int x, int y) {
 	}
 
 	chunks = newChunk;
+
+	m_chunkMap.insert(std::pair<long long int, Chunk*>(getChunkMapKey(newChunk->chunkX, newChunk->chunkZ), newChunk));
+
 	return newChunk;
 }
 
@@ -129,6 +132,7 @@ void World::deleteChunk(int x, int y) {
 
 			tail = tail->next;
 
+			m_chunkMap.erase(getChunkMapKey(temp->chunkX, temp->chunkZ));
 			m_terrainGenerator.addChunkToDeleteQueue(temp);
 		}
 		else {
@@ -138,23 +142,19 @@ void World::deleteChunk(int x, int y) {
 	}
 }
 
-Chunk* World::getChunk(int worldX, int worldZ) {
-	int x = std::floor(worldX / (float)CHUNK_WIDTH), z = std::floor(worldZ / (float)CHUNK_WIDTH);
-	Chunk* tail = chunks;
-	while(tail) {
-		if(tail->chunkX == x && tail->chunkZ == z) {
-			return tail;
-		}
-		tail = tail->next;
-	}
+Chunk* World::getChunk(const int& worldX, const int& worldZ) {
+	int x = worldX >> 4, z = worldZ >> 4;
 	
-	return nullptr;
+	auto iterator = m_chunkMap.find(getChunkMapKey(x, z));
+	if(iterator == m_chunkMap.end()) return nullptr;
+
+	return iterator->second;
 }
 
 void World::generateChunksAroundPlayer() {
 	bool chunkGenerated = false;
-	int playerChunkX = std::floor(m_player->getPosition().x / (float)CHUNK_WIDTH);
-	int playerChunkZ = std::floor(m_player->getPosition().z / (float)CHUNK_WIDTH); 
+	int playerChunkX = ((int)m_player->getPosition().x) >> 4;
+	int playerChunkZ = ((int)m_player->getPosition().z) >> 4; 
 
 	for(int dist = 0; dist < renderDistance; ++dist) {
 		for(int x = -dist; x <= dist; ++x) {
@@ -177,7 +177,7 @@ void World::generateChunksAroundPlayer() {
 					Chunk* newChunk = createChunk(chunkX, chunkZ);
 					m_terrainGenerator.addChunkToQueue(newChunk);
 
-					int worldX = chunkX * 16, worldZ = chunkZ * 16;
+					int worldX = chunkX << 4, worldZ = chunkZ << 4; // * 16
 
 					Chunk* chunk1 = getChunk(worldX - CHUNK_WIDTH, worldZ);
 					Chunk* chunk2 = getChunk(worldX, worldZ - CHUNK_WIDTH);

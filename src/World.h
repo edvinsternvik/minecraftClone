@@ -1,6 +1,7 @@
 #pragma once
 #include "Chunk.h"
 #include <vector>
+#include <unordered_map>
 #include "Camera.h"
 #include "TerrainGenerator.h"
 
@@ -34,14 +35,16 @@ public:
 public:
 	Chunk* chunks = nullptr;
 	std::vector<GameObject*> gameObjects;
-	int renderDistance = 4;
+	int renderDistance = 6;
 
 private:
-	Chunk* getChunk(int worldX, int worldZ);
+	Chunk* getChunk(const int& worldX, const int& worldZ);
 	void generateChunksAroundPlayer();
 	void deleteChunksNotAroundPlayer(int maxChunksPerFrame);
+	inline long long int getChunkMapKey(const int& worldX, const int& worldZ) { return ((long long int)worldX) << 32 | (unsigned int)worldZ; }
 
 private:
 	GameObject* m_player;
 	TerrainGenerator m_terrainGenerator;
+	std::unordered_map<long long int, Chunk*> m_chunkMap;
 };

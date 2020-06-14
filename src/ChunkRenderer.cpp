@@ -47,12 +47,12 @@ void ChunkRenderer::generateChunkSegmentMesh(int index){
 
 				if(block->getBlockType() == BlockType::Solid) {
 
-					if(!world->isSolid(worldX, y, worldZ + 1)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Front, Vector3(x, y, z), block->getBlockId()));
-					if(!world->isSolid(worldX, y, worldZ - 1)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Back , Vector3(x, y, z), block->getBlockId()));
-					if(!world->isSolid(worldX - 1, y, worldZ)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Left , Vector3(x, y, z), block->getBlockId()));
-					if(!world->isSolid(worldX + 1, y, worldZ)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Right, Vector3(x, y, z), block->getBlockId()));
-					if(!world->isSolid(worldX, y + 1, worldZ)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Top  , Vector3(x, y, z), block->getBlockId()));
-					if(!world->isSolid(worldX, y - 1, worldZ)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Down , Vector3(x, y, z), block->getBlockId()));
+					if(!isSolid(x   , y    , z + 1, chunkWorldX, chunkWorldZ, m_chunk)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Front, Vector3(x, y, z), block->getBlockId()));
+					if(!isSolid(x   , y    , z - 1, chunkWorldX, chunkWorldZ, m_chunk)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Back , Vector3(x, y, z), block->getBlockId()));
+					if(!isSolid(x - 1,y    , z    , chunkWorldX, chunkWorldZ, m_chunk)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Left , Vector3(x, y, z), block->getBlockId()));
+					if(!isSolid(x + 1,y    , z    , chunkWorldX, chunkWorldZ, m_chunk)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Right, Vector3(x, y, z), block->getBlockId()));
+					if(!isSolid(x   , y + 1, z    , chunkWorldX, chunkWorldZ, m_chunk)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Top  , Vector3(x, y, z), block->getBlockId()));
+					if(!isSolid(x   , y - 1, z    , chunkWorldX, chunkWorldZ, m_chunk)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Down , Vector3(x, y, z), block->getBlockId()));
 				}
 				else if(block->getBlockType() == BlockType::Transparent) {
 					if(block->getBlockId() == BlockId::Tallgrass) {
@@ -86,4 +86,12 @@ void ChunkRenderer::updateChunkMesh(int x, int y, int z){
 void ChunkRenderer::bind() {
 	m_vertexArray->bind();
 	m_vertexBuffer->bind();
+}
+
+bool ChunkRenderer::isSolid(const int& localX, const int& y, const int& localZ, const int& chunkWorldX, const int& chunkWorldY, const Chunk* chunk) {
+	if(localX < 0 || localX > 15 || localZ < 0 || localZ > 15) {
+		World* world = Application::getInstance().getWorld();
+		return world->isSolid(localX + chunkWorldX, y, localZ + chunkWorldY);
+	}
+	return chunk->isSolid(localX, y, localZ);
 }

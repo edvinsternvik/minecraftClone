@@ -15,13 +15,13 @@ public:
 	Chunk(int chunkX, int chunkZ);
 	~Chunk();
 
-	bool isSolid(int x, int y, int z);
-	inline const Block& getBlock(int x, int y, int z) {
+	bool isSolid(int x, int y, int z) const;
+	inline const Block& getBlock(int x, int y, int z) const {
 		Vector4i segPos = calculateSegmentPosFromChunkPos(x, y, z);
 		return BlockManager::getBlock(blocks[segPos.w][segPos.x][segPos.y][segPos.z]);
 	}
 	void changeBlock(int x, int y, int z, BlockId blockId);
-	Vector4i calculateSegmentPosFromChunkPos(int x, int y, int z);
+	Vector4i calculateSegmentPosFromChunkPos(int x, int y, int z) const;
 	inline ChunkRenderer* const getChunkRenderer() const { return m_chunkRenderer.get(); }
 
 public:

@@ -3,7 +3,6 @@
 #include "Application.h"
 #include "PerlinNoise.h"
 
-#include <iostream>
 Chunk::Chunk(int chunkX, int chunkZ) : chunkX(chunkX), chunkZ(chunkZ), next(nullptr) {
 	PerlinNoise noise;
 
@@ -51,7 +50,7 @@ void Chunk::changeBlock(int x, int y, int z, BlockId blockId) {
 
 }
 
-bool Chunk::isSolid(int x, int y, int z) {
+bool Chunk::isSolid(int x, int y, int z) const {
 	if(x < 0 || x >= CHUNK_WIDTH || y < 0 || y >= CHUNK_HEIGHT || z < 0 || z >= CHUNK_WIDTH) {
 		return false;
 	}
@@ -60,6 +59,6 @@ bool Chunk::isSolid(int x, int y, int z) {
 	return BlockManager::getBlock(blocks[segPos.w][segPos.x][segPos.y][segPos.z]).getBlockType() == BlockType::Solid;
 }
 
-Vector4i Chunk::calculateSegmentPosFromChunkPos(int x, int y, int z) {
-	return Vector4i(x, y % CHUNK_SEGMENT_HEIGHT, z, std::floor((float)y / (float)CHUNK_SEGMENT_HEIGHT));
+Vector4i Chunk::calculateSegmentPosFromChunkPos(int x, int y, int z) const {
+	return Vector4i(x, y % CHUNK_SEGMENT_HEIGHT, z, y >> 4);
 }

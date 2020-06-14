@@ -30,6 +30,8 @@ project "mcClone"
 		"GLFW"
 	}
 
+	optimize "Speed"
+
 	defines { "GLEW_STATIC" }
 
 	filter "system:windows"

@@ -15,7 +15,7 @@ const Block BlockManager::Blocks[BlockCount] {
 	Block(BlockId::Tallgrass, BlockType::Transparent, {4,4,4,4,4,4}, 0.0f)
 };
 
-const Block& BlockManager::getBlock(BlockId& blockId) {
+const Block& BlockManager::getBlock(const BlockId& blockId) {
 	if(blockId < 0 || blockId >= BlockCount) {
 		return Blocks[0];
 	}
