@@ -20,7 +20,7 @@ Application::~Application() {
 void Application::init() {
     window = new Window();
 	renderer = new Renderer();
-    world = new World();
+    world = new World(123456);
     physics = new Physics();
 
 	Camera* camera = world->createGameObject<Camera>();

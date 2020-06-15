@@ -35,7 +35,7 @@ Renderer::Renderer() {
 	shader = std::make_unique<Shader>("assets/shaders/vertexShader.glsl", "assets/shaders/fragmentShader.glsl");
 	shader->useShader();
 
-	glm::mat4 projectionMat = glm::perspective(45.0, 1280.0 / 720.0, 0.1, 100.0);
+	glm::mat4 projectionMat = glm::perspective(45.0, 1280.0 / 720.0, 0.1, 512.0);
 	glm::mat4 viewMat = glm::translate(glm::mat4(1.0), glm::vec3(0.0, 0.0, 0.0));
 	glm::mat4 modelMat = glm::translate(glm::mat4(1.0), glm::vec3(0.0, 0.0, -2.0));
 

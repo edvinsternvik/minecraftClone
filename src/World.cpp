@@ -3,8 +3,8 @@
 #include "Camera.h"
 #include "ChunkRenderer.h"
 
-World::World() : m_player(nullptr) {
-
+World::World(unsigned int seed) : m_player(nullptr), m_seed(seed), m_noiseGenerator() {
+	m_noiseGenerator.seed(seed);
 }
 
 World::~World() {
@@ -106,7 +106,7 @@ bool World::isSolid(int x, int y, int z) {
 } 
 
 Chunk* World::createChunk(int x, int y) {
-	Chunk* newChunk = new Chunk(x, y);
+	Chunk* newChunk = new Chunk(x, y, m_noiseGenerator);
 
 	if(chunks != nullptr) {
 		newChunk->next = chunks;

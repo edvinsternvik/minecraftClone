@@ -2,6 +2,7 @@
 #include "Block.h"
 #include "Math.h"
 #include <memory>
+#include "PerlinNoise.h"
 
 #define CHUNK_WIDTH 16
 #define CHUNK_HEIGHT 128
@@ -12,7 +13,7 @@ class ChunkRenderer;
 
 class Chunk {
 public:
-	Chunk(int chunkX, int chunkZ);
+	Chunk(int chunkX, int chunkZ, const PerlinNoise& noiseGenerator);
 	~Chunk();
 
 	bool isSolid(int x, int y, int z) const;

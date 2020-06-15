@@ -1,11 +1,11 @@
 #include "Chunk.h"
 #include "ChunkRenderer.h"
 #include "Application.h"
-#include "PerlinNoise.h"
 
-Chunk::Chunk(int chunkX, int chunkZ) : chunkX(chunkX), chunkZ(chunkZ), next(nullptr) {
-	PerlinNoise noise;
+#define CHUNK_WIDTH_INVERSE 1.0 / (float)CHUNK_WIDTH
+#define NOISE_OFFSET 10000.0
 
+Chunk::Chunk(int chunkX, int chunkZ, const PerlinNoise& noiseGenerator) : chunkX(chunkX), chunkZ(chunkZ), next(nullptr) {
 	for(int i = 0; i < CHUNK_SEGMENTS; ++i) {
 		int chunkSegmentYPos = i * CHUNK_SEGMENT_HEIGHT;
 
@@ -16,10 +16,13 @@ Chunk::Chunk(int chunkX, int chunkZ) : chunkX(chunkX), chunkZ(chunkZ), next(null
 
 					BlockId blockId = BlockId::Air;
 
-					float noiseX = ((float)x / (float)CHUNK_WIDTH + (float)chunkX) * 0.5;
-					float noiseZ = ((float)z / (float)CHUNK_WIDTH + (float)chunkZ) * 0.5;
-					float noiseValue = noise.noise(noiseX, noiseZ);
-					noiseValue = (noiseValue) * 16 + 64;
+					float noiseX = ((float)x * CHUNK_WIDTH_INVERSE + (float)chunkX) + NOISE_OFFSET;
+					float noiseZ = ((float)z * CHUNK_WIDTH_INVERSE + (float)chunkZ) + NOISE_OFFSET;
+
+					float noiseValue = 32;
+					noiseValue += noiseGenerator.noise(noiseX * 1.0 + NOISE_OFFSET, noiseZ * 1.0 + NOISE_OFFSET) * 4;
+					noiseValue += noiseGenerator.noise(noiseX * 0.15, noiseZ * 0.15) * 24;
+
 					if(yPos < noiseValue) blockId = BlockId::Stone;
 					else if(yPos < noiseValue + 3) blockId = BlockId::Dirt;
 					else if(yPos < noiseValue + 4) blockId = BlockId::Grass;

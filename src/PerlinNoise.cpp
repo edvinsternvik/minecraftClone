@@ -1,12 +1,14 @@
 #include "PerlinNoise.h"
 #include <math.h>
 #include <cmath>
+#include <random>
+#include <algorithm>
 
 void PerlinNoise::seed(int seed) {
-	
+	std::shuffle(p, p + 512, std::default_random_engine(seed));
 }
 
-float PerlinNoise::noise(float x, float y) {
+float PerlinNoise::noise(float x, float y) const {
 	int xInt = std::floor(x), yInt = std::floor(y);
 	float xFloat = x - xInt, yFloat = y - yInt;
 	int xGrid = xInt & 255, yGrid = yInt & 255;
@@ -31,7 +33,7 @@ float PerlinNoise::noise(float x, float y) {
 	return c;
 }
 
-float PerlinNoise::grad(int hash, float x, float y) { // Get appropriate gradient vector and return dot product
+float PerlinNoise::grad(int hash, float x, float y) const { // Get appropriate gradient vector and return dot product
 	switch(hash & 3) {
 	case 0:
 		return x + y;
@@ -46,10 +48,10 @@ float PerlinNoise::grad(int hash, float x, float y) { // Get appropriate gradien
 	}
 }
 
-float PerlinNoise::lerp(float a, float b, float t) {
+float PerlinNoise::lerp(float a, float b, float t) const {
 	return a + (b - a) * t;
 }
 
-float PerlinNoise::fade(float t) {
+float PerlinNoise::fade(float t) const {
 	return t * t * t * ( t * ( t * 6 - 15) + 10);
 }

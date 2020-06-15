@@ -4,12 +4,13 @@
 #include <unordered_map>
 #include "Camera.h"
 #include "TerrainGenerator.h"
+#include "PerlinNoise.h"
 
 class GameObject;
 
 class World {
 public:
-	World();
+	World(unsigned int seed);
 	~World();
 
 	void init();
@@ -23,6 +24,7 @@ public:
 	}
 
 	const Block* const getBlock(int x, int y, int z);
+	const unsigned int& getSeed() const { return m_seed; }
 	void setPlayer(GameObject* player);
 	void changeBlock(int x, int y, int z, BlockId blockId);
 	bool isSolid(int x, int y, int z);
@@ -35,7 +37,7 @@ public:
 public:
 	Chunk* chunks = nullptr;
 	std::vector<GameObject*> gameObjects;
-	int renderDistance = 6;
+	int renderDistance = 12;
 
 private:
 	Chunk* getChunk(const int& worldX, const int& worldZ);
@@ -47,4 +49,6 @@ private:
 	GameObject* m_player;
 	TerrainGenerator m_terrainGenerator;
 	std::unordered_map<long long int, Chunk*> m_chunkMap;
+	const unsigned int m_seed;
+	PerlinNoise m_noiseGenerator;
 };
