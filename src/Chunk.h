@@ -27,7 +27,6 @@ public:
 
 public:
 	const int chunkX, chunkZ;
-	Chunk* next = nullptr;
 
 private:
 	BlockId blocks[CHUNK_SEGMENTS][CHUNK_WIDTH][CHUNK_SEGMENT_HEIGHT][CHUNK_WIDTH];

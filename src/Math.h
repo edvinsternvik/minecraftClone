@@ -80,20 +80,24 @@ public:
 	int x, y;
 
 public:
-	Vector2 operator + (Vector2 const &vec2) {
-		return Vector2(x + vec2.x, y + vec2.y);
+	bool operator == (const Vector2i& vec2) const {
+		return (x == vec2.x && y == vec2.y);
 	}
 
-	Vector2 operator - (Vector2 const &vec2) {
-		return Vector2(x - vec2.x, y - vec2.y);
+	Vector2i operator + (Vector2i const &vec2) {
+		return Vector2i(x + vec2.x, y + vec2.y);
 	}
 
-	Vector2 operator * (Vector2 const &vec2) {
-		return Vector2(x * vec2.x, y * vec2.y);
+	Vector2i operator - (Vector2i const &vec2) {
+		return Vector2i(x - vec2.x, y - vec2.y);
 	}
 
-	Vector2 operator / (Vector2 const &vec2) {
-		return Vector2(x / vec2.x, y / vec2.y);
+	Vector2i operator * (Vector2i const &vec2) {
+		return Vector2i(x * vec2.x, y * vec2.y);
+	}
+
+	Vector2i operator / (Vector2i const &vec2) {
+		return Vector2i(x / vec2.x, y / vec2.y);
 	}
 };
 
@@ -143,3 +147,13 @@ public:
 		return os << "{ " << v.x << ", " << v.y << ", " << v.z << ", " << v.w << " }";
 	}
 };
+
+namespace std {
+    template <>
+    struct hash<Vector2i> {
+        size_t operator()(const Vector2i& k) const {
+            return std::hash<int>()(k.x) + 31 * std::hash<int>()(k.y);
+        }
+    };
+}
+

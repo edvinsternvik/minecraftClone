@@ -4,6 +4,7 @@
 #include "Application.h"
 #include <iostream>
 #include "Raycast.h"
+#include "World.h"
 
 Camera::Camera() {
 	// float height = 1.8, halfHeight = height / 2.0, halfWidth = 0.5 / 2.0;

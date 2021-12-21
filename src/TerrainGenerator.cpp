@@ -1,49 +1,43 @@
 #include "TerrainGenerator.h"
 #include "ChunkRenderer.h"
 
-TerrainGenerator::TerrainGenerator() : m_generateTerrainThread(&TerrainGenerator::generateTerrainThreadFunction, this) {
+void generateChunkJobFunction(std::unordered_map<Vector2i, std::unique_ptr<Chunk>>* chunkMap, Vector2i chunkPos) {
+    auto search = chunkMap->find(chunkPos);
+    if(search != chunkMap->end()) {
+        search->second->getChunkRenderer()->generateChunkMesh();
+    }
+}
 
-	//std::lock_guard<std::mutex> lk(m_mutex);
-	//m_conditionVariable.notify_one();
+TerrainGenerator::TerrainGenerator(std::unordered_map<Vector2i, std::unique_ptr<Chunk>>* chunkMap)
+    : m_generateTerrainThread(&TerrainGenerator::generateTerrainThreadFunction, this), m_chunkMap(chunkMap) {
 }
 
 TerrainGenerator::~TerrainGenerator() {
-	m_close = true;
-	m_conditionVariable.notify_one();
+    m_close = true;
+    m_conditionVariable.notify_one();
 	m_generateTerrainThread.join();
 }
 
-void TerrainGenerator::addChunkToQueue(Chunk* chunk) {
-	std::lock_guard<std::mutex> guard(m_mutex);
-	m_chunksToBeGenerated.push(chunk);
+void TerrainGenerator::addChunkToGenerateQueue(Vector2i chunkPos) {
+	std::lock_guard<std::mutex> guard(m_jobsMutex);
+
+    m_jobs.push([=](){
+        generateChunkJobFunction(m_chunkMap, chunkPos);
+    });
 }
 
-void TerrainGenerator::addChunkToDeleteQueue(Chunk* chunk) {
-	std::lock_guard<std::mutex> guard(m_mutex);
-	m_chunksToBeDeleted.push(chunk);
+void TerrainGenerator::deleteChunk(Vector2i chunkPos) {
+	std::lock_guard<std::mutex> guard(m_chunkMapMutex);
+
+    auto search = m_chunkMap->find(chunkPos);
+    if(search != m_chunkMap->end()) {
+        m_chunkMap->erase(search);
+    }
 }
 
 void TerrainGenerator::generate() {
-	std::lock_guard<std::mutex> guard(m_mutex);
+	std::lock_guard<std::mutex> guard(m_jobsMutex);
 	m_conditionVariable.notify_one(); // Unlocks generateTerrainThread
-}
-
-void TerrainGenerator::generateChunks(std::queue<Chunk*>& chunksToBeGenerated) {
-	while (!chunksToBeGenerated.empty()) {
-		Chunk* chunk = chunksToBeGenerated.front();
-		chunksToBeGenerated.pop();
-		
-		if(chunk) chunk->getChunkRenderer()->generateChunkMesh();
-	}
-}
-
-void TerrainGenerator::deleteChunks(std::queue<Chunk*>& chunksToBeDeleted) {
-	while (!chunksToBeDeleted.empty()) {
-		Chunk* chunk = chunksToBeDeleted.front();
-		chunksToBeDeleted.pop();
-		
-		if(chunk) delete chunk;
-	}
 }
 
 void TerrainGenerator::generateTerrainThreadFunction(TerrainGenerator* terrainGenerator) {
@@ -51,27 +45,25 @@ void TerrainGenerator::generateTerrainThreadFunction(TerrainGenerator* terrainGe
 	while (!terrainGenerator->m_close) {
 		std::queue<Chunk*> localChunksToBeGenerated, localChunksToBeDeleted;
 
+        std::function<void()> job;
 		{
-			std::unique_lock<std::mutex> lock(terrainGenerator->m_mutex);
+			std::unique_lock<std::mutex> lock(terrainGenerator->m_jobsMutex);
 
-			terrainGenerator->m_conditionVariable.wait(lock);
+			terrainGenerator->m_conditionVariable.wait(lock, [terrainGenerator]() {
+                return !terrainGenerator->m_jobs.empty() || terrainGenerator->m_close;
+            });
 
-			while (!terrainGenerator->m_chunksToBeGenerated.empty()) {
-				Chunk* chunk = terrainGenerator->m_chunksToBeGenerated.front();
-				localChunksToBeGenerated.push(chunk);
+            if(!terrainGenerator->m_jobs.empty()) {
+                job = terrainGenerator->m_jobs.front();
+                terrainGenerator->m_jobs.pop();
+            }
 
-				terrainGenerator->m_chunksToBeGenerated.pop();
-			}
-
-			while (!terrainGenerator->m_chunksToBeDeleted.empty()) {
-				localChunksToBeDeleted.push(terrainGenerator->m_chunksToBeDeleted.front());
-				terrainGenerator->m_chunksToBeDeleted.pop();
-			}
-		
 			lock.unlock();
 		}
 
-		terrainGenerator->generateChunks(localChunksToBeGenerated);
-		terrainGenerator->deleteChunks(localChunksToBeDeleted);
+        if(job) {
+            std::lock_guard<std::mutex> guard(terrainGenerator->m_chunkMapMutex);
+            job();
+        }
 	}
 }

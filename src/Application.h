@@ -1,10 +1,11 @@
 #pragma once
 #include <iostream>
+#include <memory>
 
-#include "Window.h"
-#include "World.h"
-#include "Renderer.h"
-#include "Physics.h"
+class Window;
+class World;
+class Renderer;
+class Physics;
 
 class Application {
 public:
@@ -15,14 +16,14 @@ public:
 	void run();
 
 	inline static Application& getInstance() { return *s_instance; }
-	inline Window* getWindow() const { return window; }
-	inline World* getWorld() const { return world; }
+	inline Window* getWindow() const { return window.get(); }
+	inline World* getWorld() const { return world.get(); }
 
 private:
-	Window* window;
-	World* world;
-	Renderer* renderer;
-	Physics* physics;
+    std::unique_ptr<Window> window;
+	std::unique_ptr<World> world;
+	std::unique_ptr<Renderer> renderer;
+	std::unique_ptr<Physics> physics;
 
 private:
 	static Application* s_instance;

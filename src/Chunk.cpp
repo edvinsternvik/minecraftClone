@@ -5,7 +5,7 @@
 #define CHUNK_WIDTH_INVERSE 1.0 / (float)CHUNK_WIDTH
 #define NOISE_OFFSET 10000.0
 
-Chunk::Chunk(int chunkX, int chunkZ, const PerlinNoise& noiseGenerator) : chunkX(chunkX), chunkZ(chunkZ), next(nullptr) {
+Chunk::Chunk(int chunkX, int chunkZ, const PerlinNoise& noiseGenerator) : chunkX(chunkX), chunkZ(chunkZ) {
 	for(int i = 0; i < CHUNK_SEGMENTS; ++i) {
 		int chunkSegmentYPos = i * CHUNK_SEGMENT_HEIGHT;
 

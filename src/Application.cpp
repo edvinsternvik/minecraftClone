@@ -1,6 +1,11 @@
 #include "Application.h"
 #include <chrono>
 
+#include "Window.h"
+#include "World.h"
+#include "Renderer.h"
+#include "Physics.h"
+
 Application* Application::s_instance = nullptr;
 
 Application::Application() {
@@ -11,17 +16,13 @@ Application::Application() {
 }
 
 Application::~Application() {
-    delete window;
-    delete renderer;
-    delete world; // Causes issues
-    delete physics;
 }
 
 void Application::init() {
-    window = new Window();
-	renderer = new Renderer();
-    world = new World(123456);
-    physics = new Physics();
+    window = std::make_unique<Window>();
+	renderer = std::make_unique<Renderer>();
+    world = std::make_unique<World>(123456);
+    physics = std::make_unique<Physics>();
 
 	Camera* camera = world->createGameObject<Camera>();
 	renderer->setCamera(camera);
@@ -40,8 +41,8 @@ void Application::run() {
         std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
 
         world->update(deltaTime);
-        physics->update(deltaTime, world);
-		renderer->render(world);
+        physics->update(deltaTime, world.get());
+		renderer->render(world.get());
 
         window->swapBuffers();
         window->handleEvents();

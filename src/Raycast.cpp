@@ -1,6 +1,6 @@
 #include "Raycast.h"
 #include "Application.h"
-#include "iostream"
+#include "World.h"
 
 Raycast::Raycast(Vector3 startPos, Vector3 direction, float length) {
 	World* world = Application::getInstance().getWorld();

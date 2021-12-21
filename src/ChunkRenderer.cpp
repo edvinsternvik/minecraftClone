@@ -1,19 +1,18 @@
 #include "ChunkRenderer.h"
 #include "Application.h"
+#include "World.h"
 
 ChunkRenderer::ChunkRenderer(Chunk* chunk) : m_chunk(chunk), chunkMeshSize(0) {
-	m_vertexArray = new VertexArray();
+	m_vertexArray = std::make_unique<VertexArray>();
 	m_vertexArray->bind();
 
 	const int chunkVertexBufferAttributes[] = {1};
-	m_vertexBuffer = new VertexBuffer(chunkVertexBufferAttributes, 1);
+	m_vertexBuffer = std::make_unique<VertexBuffer>(chunkVertexBufferAttributes, 1);
 	m_vertexBuffer->unbind();
 	m_vertexArray->unbind();
 }
 
 ChunkRenderer::~ChunkRenderer() {
-	delete m_vertexArray;
-	delete m_vertexBuffer;
 }
 
 void ChunkRenderer::generateChunkMesh() {

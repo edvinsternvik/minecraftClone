@@ -12,7 +12,7 @@ Physics::~Physics() {
 
 void Physics::update(float deltaTime, World* world) {
 
-	for(GameObject* go : world->gameObjects) {
+	for(auto& go : world->gameObjects) {
 		float test = std::max(1.0 - deltaTime, 0.0);
 		go->localVelocity.x *= test;
 		go->localVelocity.z *= test;

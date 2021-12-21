@@ -5,10 +5,14 @@
 #include "Camera.h"
 #include "TerrainGenerator.h"
 #include "PerlinNoise.h"
+#include <memory>
 
 class GameObject;
 
 class World {
+public:
+    using ChunkMapType = std::unordered_map<Vector2i, std::unique_ptr<Chunk>>;
+
 public:
 	World(unsigned int seed);
 	~World();
@@ -18,9 +22,8 @@ public:
 	
 	template<class T>
 	T* createGameObject() {
-		T* newObject = new T();
-		gameObjects.push_back(newObject);
-		return newObject;
+		gameObjects.push_back(std::make_unique<T>());
+		return dynamic_cast<T*>(gameObjects.back().get());
 	}
 
 	const Block* const getBlock(int x, int y, int z);
@@ -28,27 +31,34 @@ public:
 	void setPlayer(GameObject* player);
 	void changeBlock(int x, int y, int z, BlockId blockId);
 	bool isSolid(int x, int y, int z);
+    Vector2i getWorldPos(Vector2i chunkPos);
+    Vector2i getChunkPos(Vector2i worldPos);
+    Vector2i getBlockPosInChunk(Vector2i worldPos);
 
 	Chunk* createChunk(int x, int y);
 	void deleteChunk(int x, int y);
 
-	// bool isSolid(int x, int y, int z);
+    ChunkMapType::iterator chunkMapBegin() {
+        return m_chunkMap.begin();
+    }
+
+    ChunkMapType::iterator chunkMapEnd() {
+        return m_chunkMap.end();
+    }
 
 public:
-	Chunk* chunks = nullptr;
-	std::vector<GameObject*> gameObjects;
+	std::vector<std::unique_ptr<GameObject>> gameObjects;
 	int renderDistance = 12;
 
 private:
 	Chunk* getChunk(const int& worldX, const int& worldZ);
 	void generateChunksAroundPlayer();
-	void deleteChunksNotAroundPlayer(int maxChunksPerFrame);
-	inline long long int getChunkMapKey(const int& worldX, const int& worldZ) { return ((long long int)worldX) << 32 | (unsigned int)worldZ; }
+	void deleteChunksNotAroundPlayer();
 
 private:
 	GameObject* m_player;
 	TerrainGenerator m_terrainGenerator;
-	std::unordered_map<long long int, Chunk*> m_chunkMap;
+	ChunkMapType m_chunkMap;
 	const unsigned int m_seed;
 	PerlinNoise m_noiseGenerator;
 };

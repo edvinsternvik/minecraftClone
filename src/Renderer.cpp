@@ -59,8 +59,9 @@ void Renderer::render(World* world) {
 		shader->setUniformMatrix4f("u_view", &m_camera->viewMatrix[0][0]);
 	}
 	
-	Chunk* chunk = world->chunks;
-	while(chunk) {
+    for(auto chunkIterator = world->chunkMapBegin(); chunkIterator != world->chunkMapEnd(); ++chunkIterator) {
+	    Chunk* chunk = chunkIterator->second.get();
+
 		ChunkRenderer* chunkRenderer = chunk->getChunkRenderer();
 
 		if(chunkRenderer->getChunkMeshVerticiesCount() > 0) {
@@ -82,8 +83,6 @@ void Renderer::render(World* world) {
 			shader->setUniform2i("u_chunkPosition", chunk->chunkX, chunk->chunkZ);
 			glDrawArrays(GL_TRIANGLES, 0, chunkRenderer->getChunkMeshVerticiesCount());
 		}
-
-		chunk = chunk->next;
 	}
 }
 

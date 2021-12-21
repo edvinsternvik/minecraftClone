@@ -4,6 +4,7 @@
 #include "VertexArray.h"
 #include <vector>
 #include <array>
+#include <memory>
 
 class ChunkRenderer {
 public:
@@ -29,8 +30,8 @@ private:
 	std::array<std::vector<std::array<unsigned int, 6>>, CHUNK_SEGMENTS> chunkMesh;
 	int chunkMeshSize;
 
-	VertexArray* m_vertexArray;
-	VertexBuffer* m_vertexBuffer;
+    std::unique_ptr<VertexArray> m_vertexArray;
+    std::unique_ptr<VertexBuffer> m_vertexBuffer;
 	bool updatedChunkMesh;
 
 	friend class Renderer;
