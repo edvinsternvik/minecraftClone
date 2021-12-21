@@ -8,3 +8,5 @@ Makefile
 *.make
 .vscode/
 imgui.ini
+.ccls-cache/
+.ccls
