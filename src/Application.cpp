@@ -40,6 +40,7 @@ void Application::run() {
         world->update(deltaTime);
         world->update_chunks(camera->getPosition().x, camera->getPosition().z);
         physics->update(deltaTime, world.get());
+        renderer->prepare_chunks(world.get());
 		renderer->render(world.get(), camera);
 
         window->swapBuffers();

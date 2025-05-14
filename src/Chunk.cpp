@@ -1,5 +1,5 @@
 #include "Chunk.h"
-#include "ChunkRenderer.h"
+#include <utility>
 
 #define CHUNK_WIDTH_INVERSE 1.0 / (float)CHUNK_WIDTH
 #define NOISE_OFFSET 10000.0
@@ -31,8 +31,6 @@ Chunk::Chunk(int chunkX, int chunkZ, const PerlinNoise& noiseGenerator) : chunkX
 				}
 			}	
 		}
-
-		m_chunkRenderer = std::make_unique<ChunkRenderer>(this);
 	}
 }
 
@@ -47,7 +45,7 @@ void Chunk::changeBlock(int x, int y, int z, BlockId blockId) {
 	Vector4i segPos = calculateSegmentPosFromChunkPos(x, y, z);
 	if(y >= 0 && y < CHUNK_HEIGHT && blocks[segPos.w][segPos.x][segPos.y][segPos.z] != blockId) {
 		blocks[segPos.w][segPos.x][segPos.y][segPos.z] = blockId;
-		m_chunkRenderer->updateChunkMesh(x, y, z);
+        m_modifications.push_back(Vector3i(x, y, z));
 	}
 
 }
@@ -63,4 +61,10 @@ bool Chunk::isSolid(int x, int y, int z) const {
 
 Vector4i Chunk::calculateSegmentPosFromChunkPos(int x, int y, int z) const {
 	return Vector4i(x, y % CHUNK_SEGMENT_HEIGHT, z, y >> 4);
+}
+
+std::vector<Vector3i> Chunk::pop_modifications() {
+    std::vector<Vector3i> modifications;
+    std::swap(m_modifications, modifications);
+    return modifications;
 }

@@ -1,15 +1,16 @@
 #pragma once
 #include "Block.h"
 #include "Math.h"
-#include <memory>
 #include "PerlinNoise.h"
+#include <unordered_map>
+#include <vector>
 
 #define CHUNK_WIDTH 16
 #define CHUNK_HEIGHT 128
 #define CHUNK_SEGMENT_HEIGHT CHUNK_WIDTH
 #define CHUNK_SEGMENTS CHUNK_HEIGHT / CHUNK_SEGMENT_HEIGHT
 
-class ChunkRenderer;
+using ChunkID = Vector2i;
 
 class Chunk {
 public:
@@ -23,15 +24,16 @@ public:
 	}
 	void changeBlock(int x, int y, int z, BlockId blockId);
 	Vector4i calculateSegmentPosFromChunkPos(int x, int y, int z) const;
-	inline ChunkRenderer* const getChunkRenderer() const { return m_chunkRenderer.get(); }
+    std::vector<Vector3i> pop_modifications();
 
 public:
 	const int chunkX, chunkZ;
 
 private:
 	BlockId blocks[CHUNK_SEGMENTS][CHUNK_WIDTH][CHUNK_SEGMENT_HEIGHT][CHUNK_WIDTH];
-	std::unique_ptr<ChunkRenderer> m_chunkRenderer;
-
+    std::vector<Vector3i> m_modifications;
 
 	friend class World;
 };
+
+using ChunkMap = std::unordered_map<Vector2i, Chunk>;

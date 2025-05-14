@@ -1,9 +1,8 @@
 #include "World.h"
 #include "GameObject.h"
-#include "ChunkRenderer.h"
 
 World::World(unsigned int seed)
-    : m_seed(seed), m_noiseGenerator(), m_terrainGenerator(&m_chunkMap) {
+    : m_seed(seed), m_noiseGenerator() {
 	m_noiseGenerator.seed(seed);
 }
 
@@ -20,10 +19,6 @@ void World::init() {
 	for(auto& go : gameObjects) {
 		go->init();
 	}
-
-    for(auto& chunkPair : m_chunkMap) {
-        chunkPair.second->getChunkRenderer()->generateChunkMesh();
-    }
 }
 
 void World::update(float deltaTime) {
@@ -53,22 +48,22 @@ void World::changeBlock(int x, int y, int z, BlockId blockId) {
     Vector2i blockPosInChunk = getBlockPosInChunk(Vector2i(x, z));
 	chunk->changeBlock(blockPosInChunk.x, y, blockPosInChunk.y, blockId);
 
-	if(blockPosInChunk.x == 0) {
-		Chunk* otherChunk = getChunk(x - 1, z);
-		if(otherChunk) otherChunk->getChunkRenderer()->updateChunkMesh(x, y, z);
-	}
-	if(blockPosInChunk.x == CHUNK_WIDTH - 1) {
-		Chunk* otherChunk = getChunk(x + 1, z);
-		if(otherChunk) otherChunk->getChunkRenderer()->updateChunkMesh(x, y, z);
-	}
-	if(blockPosInChunk.y == 0) {
-		Chunk* otherChunk = getChunk(x, z - 1);
-		if(otherChunk) otherChunk->getChunkRenderer()->updateChunkMesh(x, y, z);
-	}
-	if(blockPosInChunk.y == CHUNK_WIDTH - 1) {
-		Chunk* otherChunk = getChunk(x, z + 1);
-		if(otherChunk) otherChunk->getChunkRenderer()->updateChunkMesh(x, y, z);
-	}
+	// if(blockPosInChunk.x == 0) {
+	// 	Chunk* otherChunk = getChunk(x - 1, z);
+	// 	if(otherChunk) otherChunk->getChunkRenderer()->updateChunkMesh(x, y, z);
+	// }
+	// if(blockPosInChunk.x == CHUNK_WIDTH - 1) {
+	// 	Chunk* otherChunk = getChunk(x + 1, z);
+	// 	if(otherChunk) otherChunk->getChunkRenderer()->updateChunkMesh(x, y, z);
+	// }
+	// if(blockPosInChunk.y == 0) {
+	// 	Chunk* otherChunk = getChunk(x, z - 1);
+	// 	if(otherChunk) otherChunk->getChunkRenderer()->updateChunkMesh(x, y, z);
+	// }
+	// if(blockPosInChunk.y == CHUNK_WIDTH - 1) {
+	// 	Chunk* otherChunk = getChunk(x, z + 1);
+	// 	if(otherChunk) otherChunk->getChunkRenderer()->updateChunkMesh(x, y, z);
+	// }
 }
 
 bool World::isSolid(int x, int y, int z) {
@@ -101,13 +96,9 @@ Vector2i World::getBlockPosInChunk(Vector2i worldPos) {
 }
 
 Chunk* World::createChunk(int x, int y) {
-	auto r = m_chunkMap.insert(std::pair<Vector2i, std::unique_ptr<Chunk>>(Vector2i(x, y), std::make_unique<Chunk>(x, y, m_noiseGenerator)));
+	auto r = m_chunkMap.insert(std::pair<Vector2i, Chunk>(Vector2i(x, y), Chunk(x, y, m_noiseGenerator)));
 
-	return r.first->second.get();
-}
-
-void World::deleteChunk(int x, int y) {
-    m_terrainGenerator.deleteChunk(Vector2i(x, y));
+	return &r.first->second;
 }
 
 Chunk* World::getChunk(int worldX, int worldZ) {
@@ -116,7 +107,7 @@ Chunk* World::getChunk(int worldX, int worldZ) {
 	auto search = m_chunkMap.find(chunkPos);
 	if(search == m_chunkMap.end()) return nullptr;
 
-	return search->second.get();
+	return &search->second;
 }
 
 void World::generate_chunks_around(int center_x, int center_z) {
@@ -133,26 +124,26 @@ void World::generate_chunks_around(int center_x, int center_z) {
 					chunkGenerated = true;
 
 					Chunk* newChunk = createChunk(chunkPos.x, chunkPos.y);
-                    m_terrainGenerator.addChunkToGenerateQueue(chunkPos);
+                    // m_terrainGenerator.addChunkToGenerateQueue(chunkPos);
 
-                    Vector2i chunkWorldPos = getWorldPos(chunkPos);
+                    // Vector2i chunkWorldPos = getWorldPos(chunkPos);
 
-					Chunk* chunk1 = getChunk(chunkWorldPos.x - CHUNK_WIDTH, chunkWorldPos.y);
-					Chunk* chunk2 = getChunk(chunkWorldPos.x, chunkWorldPos.y - CHUNK_WIDTH);
-					Chunk* chunk3 = getChunk(chunkWorldPos.x + CHUNK_WIDTH, chunkWorldPos.y);
-					Chunk* chunk4 = getChunk(chunkWorldPos.x, chunkWorldPos.y + CHUNK_WIDTH);
+					// Chunk* chunk1 = getChunk(chunkWorldPos.x - CHUNK_WIDTH, chunkWorldPos.y);
+					// Chunk* chunk2 = getChunk(chunkWorldPos.x, chunkWorldPos.y - CHUNK_WIDTH);
+					// Chunk* chunk3 = getChunk(chunkWorldPos.x + CHUNK_WIDTH, chunkWorldPos.y);
+					// Chunk* chunk4 = getChunk(chunkWorldPos.x, chunkWorldPos.y + CHUNK_WIDTH);
 
-					if(chunk1 != nullptr) m_terrainGenerator.addChunkToGenerateQueue(Vector2i(chunk1->chunkX, chunk1->chunkZ));
-					if(chunk2 != nullptr) m_terrainGenerator.addChunkToGenerateQueue(Vector2i(chunk2->chunkX, chunk2->chunkZ));
-					if(chunk3 != nullptr) m_terrainGenerator.addChunkToGenerateQueue(Vector2i(chunk3->chunkX, chunk3->chunkZ));
-					if(chunk4 != nullptr) m_terrainGenerator.addChunkToGenerateQueue(Vector2i(chunk4->chunkX, chunk4->chunkZ));
+					// if(chunk1 != nullptr) m_terrainGenerator.addChunkToGenerateQueue(Vector2i(chunk1->chunkX, chunk1->chunkZ));
+					// if(chunk2 != nullptr) m_terrainGenerator.addChunkToGenerateQueue(Vector2i(chunk2->chunkX, chunk2->chunkZ));
+					// if(chunk3 != nullptr) m_terrainGenerator.addChunkToGenerateQueue(Vector2i(chunk3->chunkX, chunk3->chunkZ));
+					// if(chunk4 != nullptr) m_terrainGenerator.addChunkToGenerateQueue(Vector2i(chunk4->chunkX, chunk4->chunkZ));
 				}
 			}
 		}
 
-		if (chunkGenerated) {
-			m_terrainGenerator.generate();
-		}
+		// if (chunkGenerated) {
+		// 	m_terrainGenerator.generate();
+		// }
 	}
 }
 
@@ -160,13 +151,18 @@ void World::delete_distant_chunks(int center_x, int center_z) {
     Vector2i playerChunkPos = getChunkPos(Vector2i(center_x, center_z));
     int deletedChunks = 0;
     
+    std::vector<Vector2i> to_erase;
     for(auto it = m_chunkMap.begin(); it != m_chunkMap.end(); ) {
         Vector2i chunkPos = it->first;
         Vector2i chunkPosRelative = playerChunkPos - chunkPos;
 
         it++;
         if(std::abs(chunkPosRelative.x) > renderDistance || std::abs(chunkPosRelative.y) > renderDistance) {
-            deleteChunk(chunkPos.x, chunkPos.y);
+            to_erase.push_back(chunkPos);
         }
+    }
+
+    for(auto chunk_pos : to_erase) {
+        m_chunkMap.erase(chunk_pos);
     }
 }

@@ -36,6 +36,8 @@ Renderer::Renderer() {
 	blockTextures->bind();
 
 	glClearColor(0.1, 0.6, 0.9, 1.0);
+
+    m_chunk_renderer = std::make_unique<ChunkRenderer>();
 }
 
 void Renderer::render(World* world, Camera* camera) {
@@ -46,29 +48,19 @@ void Renderer::render(World* world, Camera* camera) {
 		shader->setUniformMatrix4f("u_view", &camera->viewMatrix[0][0]);
 	}
 	
-    for(auto chunkIterator = world->chunkMapBegin(); chunkIterator != world->chunkMapEnd(); ++chunkIterator) {
-	    Chunk* chunk = chunkIterator->second.get();
+    for(auto chunk_it = m_chunk_renderer->chunk_render_data_begin(); chunk_it != m_chunk_renderer->chunk_render_data_end(); ++chunk_it) {
+	    Vector2i chunk_pos = chunk_it->first;
+	    ChunkRenderData* chunk = chunk_it->second.get();
 
-		ChunkRenderer* chunkRenderer = chunk->getChunkRenderer();
+		if(chunk->getChunkMeshVerticiesCount() > 0) {
+			chunk->bind();
 
-		if(chunkRenderer->getChunkMeshVerticiesCount() > 0) {
-			chunkRenderer->bind();
-
-			if(chunkRenderer->updatedChunkMesh) {
-				
-				chunkRenderer->m_vertexBuffer->setDataSize(chunkRenderer->getChunkMeshVerticiesCount());
-
-				int offset = 0;
-				for(int i = 0; i < CHUNK_SEGMENTS; ++i) {
-					int vertexCount = chunkRenderer->getChunkSegmentMeshVerticiesCount(i);
-					chunkRenderer->m_vertexBuffer->setSubData(chunkRenderer->getChunkSegmentData(i), vertexCount, offset);
-					offset += vertexCount;
-				}
-				chunkRenderer->updatedChunkMesh = false;
-			}
-
-			shader->setUniform2i("u_chunkPosition", chunk->chunkX, chunk->chunkZ);
-			glDrawArrays(GL_TRIANGLES, 0, chunkRenderer->getChunkMeshVerticiesCount());
+			shader->setUniform2i("u_chunkPosition", chunk_pos.x, chunk_pos.y);
+			glDrawArrays(GL_TRIANGLES, 0, chunk->getChunkMeshVerticiesCount());
 		}
 	}
+}
+
+void Renderer::prepare_chunks(World* world) {
+    m_chunk_renderer->prepare_chunks(world->chunkMapBegin(), world->chunkMapEnd());
 }

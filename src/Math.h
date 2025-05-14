@@ -44,6 +44,48 @@ public:
 	}
 };
 
+class Vector3i {
+public:
+	Vector3i(int x, int y, int z) : x(x), y(y), z(z) {}
+	Vector3i() : x(0), y(0), z(0) {}
+
+	inline float length() {
+		return std::sqrt(x * x + y * y + z * z);
+	}
+
+public:
+	int x, y, z;
+
+public:
+	Vector3i operator + (Vector3i const &vec3) {
+		return Vector3i(x + vec3.x, y + vec3.y, z + vec3.z);
+	}
+
+	Vector3i operator - (Vector3i const &vec3) {
+		return Vector3i(x - vec3.x, y - vec3.y, z - vec3.z);
+	}
+
+	Vector3i operator * (Vector3i const &vec3) {
+		return Vector3i(x * vec3.x, y * vec3.y, z * vec3.z);
+	}
+
+	Vector3i operator / (Vector3i const &vec3) {
+		return Vector3i(x / vec3.x, y / vec3.y, z / vec3.z);
+	}
+
+	Vector3i operator * (float const &scalar) {
+		return Vector3i(x * scalar, y * scalar, z * scalar);
+	}
+
+	Vector3i operator / (float const &scalar) {
+		return Vector3i(x / scalar, y / scalar, z / scalar);
+	}
+	
+	friend std::ostream& operator<<(std::ostream& os, Vector3i& v) {
+		return os << "{ " << v.x << ", " << v.y << ", " << v.z << " }";
+	}
+};
+
 
 class Vector2 {
 public:

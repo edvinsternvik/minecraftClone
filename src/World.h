@@ -2,7 +2,6 @@
 #include "Chunk.h"
 #include <vector>
 #include <unordered_map>
-#include "TerrainGenerator.h"
 #include "PerlinNoise.h"
 #include <memory>
 
@@ -12,7 +11,6 @@ class GameObject;
 
 class World {
 public:
-    using ChunkMapType = std::unordered_map<Vector2i, std::unique_ptr<Chunk>>;
 
 public:
 	World(unsigned int seed);
@@ -37,13 +35,12 @@ public:
     Vector2i getBlockPosInChunk(Vector2i worldPos);
 
 	Chunk* createChunk(int x, int y);
-	void deleteChunk(int x, int y);
 
-    ChunkMapType::iterator chunkMapBegin() {
+    ChunkMap::iterator chunkMapBegin() {
         return m_chunkMap.begin();
     }
 
-    ChunkMapType::iterator chunkMapEnd() {
+    ChunkMap::iterator chunkMapEnd() {
         return m_chunkMap.end();
     }
 
@@ -57,8 +54,7 @@ private:
 	void delete_distant_chunks(int center_x, int center_z);
 
 private:
-	TerrainGenerator m_terrainGenerator;
-	ChunkMapType m_chunkMap;
+	ChunkMap m_chunkMap;
 	const unsigned int m_seed;
 	PerlinNoise m_noiseGenerator;
 };

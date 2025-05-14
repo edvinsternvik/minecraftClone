@@ -5,17 +5,15 @@
 #include <vector>
 #include <array>
 #include <memory>
+#include <unordered_map>
 
-class ChunkRenderer {
+class ChunkRenderData {
 public:
-	ChunkRenderer(Chunk* chunk);
-	~ChunkRenderer();
-
-	void generateChunkMesh();
-	void generateChunkSegmentMesh(int index);
-	void updateChunkMesh(int x, int y, int z);
-
-private:
+    ChunkRenderData();
+    ~ChunkRenderData();
+	void generateChunkMesh(Chunk* chunk);
+	void updateChunkMesh(Chunk* chunk, int x, int y, int z);
+    void update_vertex_buffer();
 
 	inline unsigned int* getChunkSegmentData(int index) { return &chunkMesh[index][0][0]; }
 	inline int getChunkSegmentMeshVerticiesCount(int index) const { return chunkMesh[index].size() * 6; }
@@ -25,14 +23,27 @@ private:
 	void bind();
 
 private:
-	const Chunk* const m_chunk;
+	void generateChunkSegmentMesh(Chunk* chunk, int index);
 
+
+private:
 	std::array<std::vector<std::array<unsigned int, 6>>, CHUNK_SEGMENTS> chunkMesh;
 	int chunkMeshSize;
 
     std::unique_ptr<VertexArray> m_vertexArray;
     std::unique_ptr<VertexBuffer> m_vertexBuffer;
 	bool updatedChunkMesh;
+};
 
-	friend class Renderer;
+using ChunkRenderDataMap = std::unordered_map<Vector2i, std::unique_ptr<ChunkRenderData>>;
+
+class ChunkRenderer {
+public:
+    void prepare_chunks(ChunkMap::iterator chunk_begin, ChunkMap::iterator chunk_end);
+
+    ChunkRenderDataMap::iterator chunk_render_data_begin() { return m_render_data.begin(); }
+    ChunkRenderDataMap::iterator chunk_render_data_end() { return m_render_data.end(); }
+
+private:
+    ChunkRenderDataMap m_render_data;
 };
