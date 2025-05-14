@@ -62,5 +62,5 @@ void Renderer::render(World* world, Camera* camera) {
 }
 
 void Renderer::prepare_chunks(World* world) {
-    m_chunk_renderer->prepare_chunks(world->chunkMapBegin(), world->chunkMapEnd());
+    m_chunk_renderer->prepare_chunks(world->get_chunk_map());
 }

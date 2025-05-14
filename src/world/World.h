@@ -36,6 +36,7 @@ public:
 
 	Chunk* createChunk(int x, int y);
 
+    const ChunkMap* get_chunk_map() const { return &m_chunkMap; }
     ChunkMap::iterator chunkMapBegin() {
         return m_chunkMap.begin();
     }

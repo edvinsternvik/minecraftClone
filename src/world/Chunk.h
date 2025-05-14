@@ -2,6 +2,7 @@
 #include "Block.h"
 #include "../misc/Math.h"
 #include "../misc/PerlinNoise.h"
+#include <memory>
 #include <unordered_map>
 #include <vector>
 
@@ -15,7 +16,9 @@ using ChunkID = Vector2i;
 class Chunk {
 public:
 	Chunk(int chunkX, int chunkZ, const PerlinNoise& noiseGenerator);
+    Chunk(const Chunk&) = delete;
 	~Chunk();
+    Chunk&  operator=(const Chunk&) = delete;
 
 	bool isSolid(int x, int y, int z) const;
 	inline const Block& getBlock(int x, int y, int z) const {
@@ -36,4 +39,4 @@ private:
 	friend class World;
 };
 
-using ChunkMap = std::unordered_map<Vector2i, Chunk>;
+using ChunkMap = std::unordered_map<Vector2i, std::unique_ptr<Chunk>>;

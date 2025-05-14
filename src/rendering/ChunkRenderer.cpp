@@ -2,6 +2,7 @@
 #include "../Application.h"
 #include "../world/World.h"
 #include "BlockModelData.h"
+#include <unordered_set>
 
 ChunkRenderData::ChunkRenderData() : chunkMeshSize(0) {
     m_vertexArray = std::make_unique<VertexArray>();
@@ -16,7 +17,7 @@ ChunkRenderData::ChunkRenderData() : chunkMeshSize(0) {
 ChunkRenderData::~ChunkRenderData() {
 }
 
-void ChunkRenderData::generateChunkMesh(Chunk* chunk) {
+void ChunkRenderData::generateChunkMesh(const Chunk* chunk) {
     for(int i = 0; i < CHUNK_SEGMENTS; ++i) {
         generateChunkSegmentMesh(chunk, i);
     }
@@ -27,7 +28,7 @@ void ChunkRenderData::generateChunkMesh(Chunk* chunk) {
     }
 }
 
-void ChunkRenderData::generateChunkSegmentMesh(Chunk* chunk, int index){
+void ChunkRenderData::generateChunkSegmentMesh(const Chunk* chunk, int index){
     if(index < 0 || index >= CHUNK_SEGMENTS) return;
 
     auto* segmentMesh = &chunkMesh[index];
@@ -70,11 +71,9 @@ void ChunkRenderData::generateChunkSegmentMesh(Chunk* chunk, int index){
     for(int i = 0; i < CHUNK_SEGMENTS; ++i) {
         chunkMeshSize += getChunkSegmentMeshVerticiesCount(i);
     }
-
-    updatedChunkMesh = true;
 }
 
-void ChunkRenderData::updateChunkMesh(Chunk* chunk, int x, int y, int z){
+void ChunkRenderData::updateChunkMesh(const Chunk* chunk, int x, int y, int z){
     Vector4i segPos = chunk->calculateSegmentPosFromChunkPos(x, y, z);
     generateChunkSegmentMesh(chunk, segPos.w);
 
@@ -109,19 +108,40 @@ bool ChunkRenderData::isSolid(const int& localX, const int& y, const int& localZ
 }
 
 
-void ChunkRenderer::prepare_chunks(ChunkMap::iterator chunk_begin, ChunkMap::iterator chunk_end) {
-    for(auto chunk_it = chunk_begin; chunk_it != chunk_end; ++chunk_it) {
-        Vector2i chunk_coords = chunk_it->first;
-	    Chunk* chunk = &chunk_it->second;
+void ChunkRenderer::prepare_chunks(const ChunkMap* chunks) {
+    std::unordered_set<Vector2i> removed_chunks;
+    for(auto& chunk : m_render_data) { removed_chunks.insert(chunk.first); }
+    for(auto& chunk : *chunks) { removed_chunks.erase(chunk.first); }
+
+    for(auto chunk_coords : removed_chunks) {
+        m_render_data.erase(chunk_coords);
+    }
+
+
+    std::unordered_set<Vector2i> updated_chunks;
+    for(auto& chunk_it : *chunks) {
+        Vector2i chunk_coords = chunk_it.first;
+	    const Chunk* chunk = chunk_it.second.get();
 
         // auto modifications = chunk->pop_modifications();
 
         if(m_render_data.count(chunk_coords) == 0) {
-            auto chunk_render = std::make_unique<ChunkRenderData>();
-            chunk_render->generateChunkMesh(chunk);
-            chunk_render->update_vertex_buffer();
-
-            m_render_data[chunk_coords] = std::move(chunk_render);
+            m_render_data[chunk_coords] = std::make_unique<ChunkRenderData>();
+            updated_chunks.insert(chunk_coords);
+            updated_chunks.insert(Vector2i(chunk_coords.x + 1, chunk_coords.y + 0));
+            updated_chunks.insert(Vector2i(chunk_coords.x - 1, chunk_coords.y + 0));
+            updated_chunks.insert(Vector2i(chunk_coords.x + 0, chunk_coords.y + 1));
+            updated_chunks.insert(Vector2i(chunk_coords.x + 0, chunk_coords.y - 1));
         }
+    }
+
+    for(auto chunk_coords : updated_chunks) {
+        auto chunk_render_data = m_render_data.find(chunk_coords);
+        if(chunk_render_data == m_render_data.end()) continue;
+        auto chunk = chunks->find(chunk_coords);
+        if(chunk == chunks->end()) continue;
+
+        chunk_render_data->second->generateChunkMesh(chunk->second.get());
+        chunk_render_data->second->update_vertex_buffer();
     }
 }

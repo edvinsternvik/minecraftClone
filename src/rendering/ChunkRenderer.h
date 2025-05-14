@@ -10,9 +10,10 @@
 class ChunkRenderData {
 public:
     ChunkRenderData();
+    ChunkRenderData(const ChunkRenderData&) = delete;
     ~ChunkRenderData();
-	void generateChunkMesh(Chunk* chunk);
-	void updateChunkMesh(Chunk* chunk, int x, int y, int z);
+	void generateChunkMesh(const Chunk* chunk);
+	void updateChunkMesh(const Chunk* chunk, int x, int y, int z);
     void update_vertex_buffer();
 
 	inline unsigned int* getChunkSegmentData(int index) { return &chunkMesh[index][0][0]; }
@@ -23,7 +24,7 @@ public:
 	void bind();
 
 private:
-	void generateChunkSegmentMesh(Chunk* chunk, int index);
+	void generateChunkSegmentMesh(const Chunk* chunk, int index);
 
 
 private:
@@ -32,14 +33,13 @@ private:
 
     std::unique_ptr<VertexArray> m_vertexArray;
     std::unique_ptr<VertexBuffer> m_vertexBuffer;
-	bool updatedChunkMesh;
 };
 
 using ChunkRenderDataMap = std::unordered_map<Vector2i, std::unique_ptr<ChunkRenderData>>;
 
 class ChunkRenderer {
 public:
-    void prepare_chunks(ChunkMap::iterator chunk_begin, ChunkMap::iterator chunk_end);
+    void prepare_chunks(const ChunkMap* chunks);
 
     ChunkRenderDataMap::iterator chunk_render_data_begin() { return m_render_data.begin(); }
     ChunkRenderDataMap::iterator chunk_render_data_end() { return m_render_data.end(); }
