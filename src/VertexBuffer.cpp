@@ -1,13 +1,11 @@
 #include "VertexBuffer.h"
 #include <GL/glew.h>
-#include <cmath>
 
 VertexBuffer::VertexBuffer(const float* verticies, int verticiesCount, const int attributes[], int attributesCount) {
 	init(attributes, attributesCount);
 
 	bind();
 	glBufferData(GL_ARRAY_BUFFER, verticiesCount * m_attributesStride * sizeof(unsigned int), verticies, GL_STATIC_DRAW);
-	// unbind();
 }
 
 VertexBuffer::VertexBuffer(const int attributes[], int attributesCount) {
@@ -19,27 +17,22 @@ VertexBuffer::~VertexBuffer() {
 }
 
 void VertexBuffer::bind() {
-	// std::cout << "Binding vbo: " << m_vertexBufferId << std::endl;
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
 }
 
 void VertexBuffer::unbind() {
-	// std::cout << "Unbinding vbo: " << m_vertexBufferId << std::endl;
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void VertexBuffer::setData(const unsigned int* verticies, int verticiesCount) {
-	// bind();
 	glBufferData(GL_ARRAY_BUFFER, verticiesCount * m_attributesStride * sizeof(unsigned int), verticies, GL_STREAM_DRAW);
 }
 
 void VertexBuffer::setDataSize(int verticiesCount) {
-	// bind();
 	glBufferData(GL_ARRAY_BUFFER, verticiesCount * m_attributesStride * sizeof(unsigned int), NULL, GL_STREAM_DRAW);
 }
 
 void VertexBuffer::setSubData(const unsigned int* verticies, int verticiesCount, int vertexOffset) {
-	// bind();
 	glBufferSubData(GL_ARRAY_BUFFER, vertexOffset * m_attributesStride * sizeof(unsigned int), verticiesCount * m_attributesStride * sizeof(unsigned int), verticies);
 }
 
@@ -55,10 +48,8 @@ void VertexBuffer::init(const int attributes[], int attributesCount) {
 	int total = 0;
 	for(int i = 0; i < attributesCount; ++i) {
 		glEnableVertexAttribArray(i);
-		glVertexAttribPointer(i, attributes[i], GL_FLOAT, GL_FALSE, m_attributesStride * sizeof(unsigned int), (void*)total);
+		glVertexAttribPointer(i, attributes[i], GL_FLOAT, GL_FALSE, m_attributesStride * sizeof(unsigned int), reinterpret_cast<void*>(total));
 
 		total += attributes[i] * sizeof(unsigned int);
 	}
-
-	// unbind();
 }

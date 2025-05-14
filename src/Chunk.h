@@ -34,5 +34,4 @@ private:
 
 
 	friend class World;
-
 };

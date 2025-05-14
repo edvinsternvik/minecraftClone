@@ -2,9 +2,9 @@
 
 int main(void) {
 
-    Application epicly;
-    epicly.init();
-    epicly.run();
+    Application game;
+    game.init();
+    game.run();
     
     return 0;
 }

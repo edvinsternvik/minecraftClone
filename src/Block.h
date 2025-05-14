@@ -1,7 +1,6 @@
 #pragma once
 #include <array>
 #include "BlockModelData.h"
-#include "Math.h"
 
 enum BlockId {
 	Air, Grass, Stone, Dirt, Tallgrass

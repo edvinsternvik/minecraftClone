@@ -23,10 +23,7 @@ void Application::init() {
 	renderer = std::make_unique<Renderer>();
     world = std::make_unique<World>(123456);
     physics = std::make_unique<Physics>();
-
-	Camera* camera = world->createGameObject<Camera>();
-	renderer->setCamera(camera);
-    world->setPlayer(camera);
+	camera = world->createGameObject<Camera>();
 }
 
 
@@ -41,8 +38,9 @@ void Application::run() {
         std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
 
         world->update(deltaTime);
+        world->update_chunks(camera->getPosition().x, camera->getPosition().z);
         physics->update(deltaTime, world.get());
-		renderer->render(world.get());
+		renderer->render(world.get(), camera);
 
         window->swapBuffers();
         window->handleEvents();

@@ -10,8 +10,6 @@
 #include "ChunkRenderer.h"
 #include "Camera.h"
 
-#include <vector>
-
 Renderer::Renderer() {
 	if(glewInit() != GLEW_OK) {
 		std::cout << "Failed to initialize glew" << std::endl;
@@ -22,15 +20,6 @@ Renderer::Renderer() {
 
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
-
-	// const float crosshairVertexBufferData[] = {
-	// 	-0.5, -0.5, 0.0,
-	// 	0.5, -0.5, 0.0,
-	// 	0.5, 0.5, 0.0
-	// };
-	// const int crosshairVertexBufferAttributes[] = {3};
-	// crosshairVertexBuffer = std::make_unique<VertexBuffer>(crosshairVertexBufferData, 9, crosshairVertexBufferAttributes, 1);
-	// otherShader = std::make_unique<Shader>("assets/shaders/otherVertexShader.glsl", "assets/shaders/otherFragmentShader.glsl");
 
 	shader = std::make_unique<Shader>("assets/shaders/vertexShader.glsl", "assets/shaders/fragmentShader.glsl");
 	shader->useShader();
@@ -43,20 +32,18 @@ Renderer::Renderer() {
 	shader->setUniformMatrix4f("u_view", &viewMat[0][0]);
 	shader->setUniformMatrix4f("u_model", &modelMat[0][0]);
 
-	blockTextures = new TextureAtlas("assets/textures/Textures.png", 16, 16);
+	blockTextures = std::make_unique<TextureAtlas>("assets/textures/Textures.png", 16, 16);
 	blockTextures->bind();
 
 	glClearColor(0.1, 0.6, 0.9, 1.0);
-
-	// glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 }
 
-void Renderer::render(World* world) {
+void Renderer::render(World* world, Camera* camera) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	shader->useShader();
-	if(m_camera) {
-		shader->setUniformMatrix4f("u_view", &m_camera->viewMatrix[0][0]);
+	if(camera) {
+		shader->setUniformMatrix4f("u_view", &camera->viewMatrix[0][0]);
 	}
 	
     for(auto chunkIterator = world->chunkMapBegin(); chunkIterator != world->chunkMapEnd(); ++chunkIterator) {
@@ -84,8 +71,4 @@ void Renderer::render(World* world) {
 			glDrawArrays(GL_TRIANGLES, 0, chunkRenderer->getChunkMeshVerticiesCount());
 		}
 	}
-}
-
-void Renderer::setCamera(Camera* camera) {
-	m_camera = camera;
 }

@@ -2,10 +2,11 @@
 #include "Chunk.h"
 #include <vector>
 #include <unordered_map>
-#include "Camera.h"
 #include "TerrainGenerator.h"
 #include "PerlinNoise.h"
 #include <memory>
+
+#include "Camera.h"
 
 class GameObject;
 
@@ -19,6 +20,7 @@ public:
 
 	void init();
 	void update(float deltaTime);
+    void update_chunks(int center_x, int center_z);
 	
 	template<class T>
 	T* createGameObject() {
@@ -28,7 +30,6 @@ public:
 
 	const Block* const getBlock(int x, int y, int z);
 	const unsigned int& getSeed() const { return m_seed; }
-	void setPlayer(GameObject* player);
 	void changeBlock(int x, int y, int z, BlockId blockId);
 	bool isSolid(int x, int y, int z);
     Vector2i getWorldPos(Vector2i chunkPos);
@@ -51,12 +52,11 @@ public:
 	int renderDistance = 12;
 
 private:
-	Chunk* getChunk(const int& worldX, const int& worldZ);
-	void generateChunksAroundPlayer();
-	void deleteChunksNotAroundPlayer();
+	Chunk* getChunk(int worldX, int worldZ);
+	void generate_chunks_around(int center_x, int center_z);
+	void delete_distant_chunks(int center_x, int center_z);
 
 private:
-	GameObject* m_player;
 	TerrainGenerator m_terrainGenerator;
 	ChunkMapType m_chunkMap;
 	const unsigned int m_seed;

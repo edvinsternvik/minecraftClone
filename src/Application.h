@@ -1,11 +1,11 @@
 #pragma once
-#include <iostream>
 #include <memory>
 
 class Window;
 class World;
 class Renderer;
 class Physics;
+class Camera;
 
 class Application {
 public:
@@ -24,6 +24,7 @@ private:
 	std::unique_ptr<World> world;
 	std::unique_ptr<Renderer> renderer;
 	std::unique_ptr<Physics> physics;
+    Camera* camera;
 
 private:
 	static Application* s_instance;

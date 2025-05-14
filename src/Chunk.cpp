@@ -1,6 +1,5 @@
 #include "Chunk.h"
 #include "ChunkRenderer.h"
-#include "Application.h"
 
 #define CHUNK_WIDTH_INVERSE 1.0 / (float)CHUNK_WIDTH
 #define NOISE_OFFSET 10000.0

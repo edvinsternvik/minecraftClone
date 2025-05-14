@@ -14,7 +14,3 @@ void GameObject::move(Vector3 movement) {
 	localPosition.y += pos.y;
 	localPosition.z += pos.z;
 }
-
-void GameObject::setParent(GameObject* parent) {
-	m_parent = parent;
-}

@@ -2,12 +2,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "Input.h"
 #include "Application.h"
-#include <iostream>
 #include "Raycast.h"
 #include "World.h"
 
 Camera::Camera() {
-	// float height = 1.8, halfHeight = height / 2.0, halfWidth = 0.5 / 2.0;
 	colliderSize = Vector3(0.8, 1.8, 0.8);
 }
 
@@ -47,7 +45,6 @@ void Camera::update(float deltaTime) {
 	}
 	if(Input::keyDown(KEY_SPACE)) {
 		if(isGrounded) jump = true;
-		// movement.y += movementSpeed;
 	}
 	if(Input::keyDown(KEY_LEFT_CONTROL)) {
 		movement.y -= 1.0;
@@ -71,7 +68,6 @@ void Camera::update(float deltaTime) {
 	deltaMovement.y += movement.y;
 
 	localVelocity = localVelocity + deltaMovement;
-	// localPosition = localPosition + deltaMovement;
 
 	Vector3 position = getPosition();
 	viewMatrix = glm::rotate(glm::mat4(1.0), glm::radians(rotation.x), glm::vec3(1.0, 0.0, 0.0));

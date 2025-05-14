@@ -1,10 +1,9 @@
 #include "World.h"
 #include "GameObject.h"
-#include "Camera.h"
 #include "ChunkRenderer.h"
 
 World::World(unsigned int seed)
-    : m_player(nullptr), m_seed(seed), m_noiseGenerator(), m_terrainGenerator(&m_chunkMap) {
+    : m_seed(seed), m_noiseGenerator(), m_terrainGenerator(&m_chunkMap) {
 	m_noiseGenerator.seed(seed);
 }
 
@@ -31,14 +30,11 @@ void World::update(float deltaTime) {
 	for(auto& go : gameObjects) {
 		go->update(deltaTime);
 	}
-
-	// Create chunks
-	deleteChunksNotAroundPlayer();
-	generateChunksAroundPlayer();
 }
 
-void World::setPlayer(GameObject* player) {
-	m_player = player;
+void World::update_chunks(int center_x, int center_z) {
+	delete_distant_chunks(center_x, center_z);
+	generate_chunks_around(center_x, center_z);
 }
 
 const Block* const World::getBlock(int x, int y, int z) {
@@ -114,7 +110,7 @@ void World::deleteChunk(int x, int y) {
     m_terrainGenerator.deleteChunk(Vector2i(x, y));
 }
 
-Chunk* World::getChunk(const int& worldX, const int& worldZ) {
+Chunk* World::getChunk(int worldX, int worldZ) {
     Vector2i chunkPos = getChunkPos(Vector2i(worldX, worldZ));
 	
 	auto search = m_chunkMap.find(chunkPos);
@@ -123,9 +119,9 @@ Chunk* World::getChunk(const int& worldX, const int& worldZ) {
 	return search->second.get();
 }
 
-void World::generateChunksAroundPlayer() {
+void World::generate_chunks_around(int center_x, int center_z) {
 	bool chunkGenerated = false;
-    Vector2i playerChunkPos = getChunkPos(Vector2i(m_player->getPosition().x, m_player->getPosition().z));
+    Vector2i playerChunkPos = getChunkPos(Vector2i(center_x, center_z));
 
 	for(int dist = 0; dist < renderDistance; ++dist) {
 		for(int x = -dist; x <= dist; ++x) {
@@ -160,8 +156,8 @@ void World::generateChunksAroundPlayer() {
 	}
 }
 
-void World::deleteChunksNotAroundPlayer() {
-    Vector2i playerChunkPos = getChunkPos(Vector2i(m_player->getPosition().x, m_player->getPosition().z));
+void World::delete_distant_chunks(int center_x, int center_z) {
+    Vector2i playerChunkPos = getChunkPos(Vector2i(center_x, center_z));
     int deletedChunks = 0;
     
     for(auto it = m_chunkMap.begin(); it != m_chunkMap.end(); ) {

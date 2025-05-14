@@ -13,6 +13,5 @@ public:
 
 private:
 	int imageWidth, imageHeight, n;
-	unsigned char* data;
 	unsigned int texture;
 };

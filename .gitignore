@@ -10,3 +10,5 @@ Makefile
 imgui.ini
 .ccls-cache/
 .ccls
+.cache
+compile_commands.json

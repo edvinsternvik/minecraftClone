@@ -10,7 +10,7 @@ Texture::Texture(const char* filePath) {
 
 	stbi_set_flip_vertically_on_load(true);
 
-	data = stbi_load(filePath, &imageWidth, &imageHeight, &n, 4);
+	unsigned char* data = stbi_load(filePath, &imageWidth, &imageHeight, &n, 4);
 	if(!data) {
 		std::cout << "Could not load file " << filePath << std::endl;
 	}
