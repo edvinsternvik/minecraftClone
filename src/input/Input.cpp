@@ -1,6 +1,6 @@
 #include "Input.h"
-#include "Application.h"
-#include "Window.h"
+#include "../Application.h"
+#include "../misc/Window.h"
 
 bool Input::keyDown(int keycode) {
 	auto window = Application::getInstance().getWindow()->getNativeWindow();

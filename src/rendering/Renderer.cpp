@@ -6,9 +6,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "World.h"
+#include "../world/World.h"
 #include "ChunkRenderer.h"
-#include "Camera.h"
+#include "../Camera.h"
 
 Renderer::Renderer() {
 	if(glewInit() != GLEW_OK) {

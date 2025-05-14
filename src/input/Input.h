@@ -1,6 +1,6 @@
 #pragma once
 #include "Keycodes.h"
-#include "Math.h"
+#include "../misc/Math.h"
 
 class Input {
 public:

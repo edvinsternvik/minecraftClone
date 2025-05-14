@@ -2,10 +2,10 @@
 #include "Chunk.h"
 #include <vector>
 #include <unordered_map>
-#include "PerlinNoise.h"
+#include "../misc/PerlinNoise.h"
 #include <memory>
 
-#include "Camera.h"
+#include "../Camera.h"
 
 class GameObject;
 

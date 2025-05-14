@@ -1,5 +1,5 @@
 #include "Physics.h"
-#include "World.h"
+#include "../world/World.h"
 #include "Raycast.h"
 
 Physics::Physics() {

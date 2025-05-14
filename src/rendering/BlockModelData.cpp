@@ -1,5 +1,4 @@
 #include "BlockModelData.h"
-#include "Block.h"
 
 // Gets the position with the bits layed out in the format: xxxxxyyyyyyyyzzzzz00000000000000 (5x - 8y - 5z - 0)
 unsigned int getPositionBits(const unsigned int& x, const unsigned int& y, const unsigned int& z) {

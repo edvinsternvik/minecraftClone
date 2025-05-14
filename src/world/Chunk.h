@@ -1,7 +1,7 @@
 #pragma once
 #include "Block.h"
-#include "Math.h"
-#include "PerlinNoise.h"
+#include "../misc/Math.h"
+#include "../misc/PerlinNoise.h"
 #include <unordered_map>
 #include <vector>
 

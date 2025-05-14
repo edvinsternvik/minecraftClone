@@ -1,9 +1,9 @@
 #include "Camera.h"
 #include <glm/gtc/matrix_transform.hpp>
-#include "Input.h"
+#include "input/Input.h"
 #include "Application.h"
-#include "Raycast.h"
-#include "World.h"
+#include "physics/Raycast.h"
+#include "world/World.h"
 
 Camera::Camera() {
 	colliderSize = Vector3(0.8, 1.8, 0.8);

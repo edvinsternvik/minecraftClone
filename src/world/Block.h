@@ -1,6 +1,9 @@
 #pragma once
 #include <array>
-#include "BlockModelData.h"
+
+enum BlockSide {
+	Front, Back, Left, Right, Top, Down
+};
 
 enum BlockId {
 	Air, Grass, Stone, Dirt, Tallgrass

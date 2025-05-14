@@ -1,5 +1,5 @@
 #pragma once
-#include "Chunk.h"
+#include "../world/Chunk.h"
 #include "VertexBuffer.h"
 #include "VertexArray.h"
 #include <vector>

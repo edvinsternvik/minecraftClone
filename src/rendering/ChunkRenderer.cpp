@@ -1,6 +1,7 @@
 #include "ChunkRenderer.h"
-#include "Application.h"
-#include "World.h"
+#include "../Application.h"
+#include "../world/World.h"
+#include "BlockModelData.h"
 
 ChunkRenderData::ChunkRenderData() : chunkMeshSize(0) {
     m_vertexArray = std::make_unique<VertexArray>();

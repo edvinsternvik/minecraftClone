@@ -1,10 +1,7 @@
 #pragma once
 #include <array>
-#include "Math.h"
-
-enum BlockSide {
-	Front, Back, Left, Right, Top, Down
-};
+#include "../world/Block.h"
+#include "../misc/Math.h"
 
 class BlockModelData {
 public:

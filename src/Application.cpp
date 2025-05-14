@@ -1,10 +1,10 @@
 #include "Application.h"
 #include <chrono>
 
-#include "Window.h"
-#include "World.h"
-#include "Renderer.h"
-#include "Physics.h"
+#include "misc/Window.h"
+#include "world/World.h"
+#include "rendering/Renderer.h"
+#include "physics/Physics.h"
 
 Application* Application::s_instance = nullptr;
 

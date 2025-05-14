@@ -1,5 +1,5 @@
 #include "World.h"
-#include "GameObject.h"
+#include "../GameObject.h"
 
 World::World(unsigned int seed)
     : m_seed(seed), m_noiseGenerator() {
