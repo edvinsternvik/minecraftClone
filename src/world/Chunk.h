@@ -3,6 +3,7 @@
 #include "../misc/Math.h"
 #include "../misc/PerlinNoise.h"
 #include <memory>
+#include <optional>
 #include <unordered_map>
 #include <vector>
 
@@ -21,6 +22,7 @@ public:
     Chunk&  operator=(const Chunk&) = delete;
 
 	bool isSolid(int x, int y, int z) const;
+    std::optional<Block> get_block(int x, int y, int z) const;
 	inline const Block& getBlock(int x, int y, int z) const {
 		Vector4i segPos = calculateSegmentPosFromChunkPos(x, y, z);
 		return BlockManager::getBlock(blocks[segPos.w][segPos.x][segPos.y][segPos.z]);

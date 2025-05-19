@@ -82,8 +82,6 @@ void ChunkRenderData::updateChunkMesh(const Chunk* chunk){
         Vector4i segPos = chunk->calculateSegmentPosFromChunkPos(pos.x, pos.y, pos.z);
 
         segment_updates.insert(segPos.w);
-        if(segPos.y == 0 && segPos.w > 0) segment_updates.insert(segPos.w - 1);
-        if(segPos.y == CHUNK_SEGMENT_HEIGHT - 1 && segPos.w < CHUNK_SEGMENTS - 1) segment_updates.insert(segPos.w + 1);
     }
 
     for(int segment : segment_updates) {
