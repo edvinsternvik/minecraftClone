@@ -1,5 +1,4 @@
 #include "Chunk.h"
-#include <utility>
 
 #define CHUNK_WIDTH_INVERSE 1.0 / (float)CHUNK_WIDTH
 #define NOISE_OFFSET 10000.0
@@ -50,6 +49,13 @@ void Chunk::changeBlock(int x, int y, int z, BlockId blockId) {
 
 }
 
+void Chunk::block_update(int x, int y, int z) {
+	if(x < 0 || x >= CHUNK_WIDTH || y < 0 || y >= CHUNK_HEIGHT || z < 0 || z >= CHUNK_WIDTH) {
+		return;
+	}
+    m_modifications.push_back(Vector3i(x, y, z));
+}
+
 bool Chunk::isSolid(int x, int y, int z) const {
 	if(x < 0 || x >= CHUNK_WIDTH || y < 0 || y >= CHUNK_HEIGHT || z < 0 || z >= CHUNK_WIDTH) {
 		return false;
@@ -63,8 +69,10 @@ Vector4i Chunk::calculateSegmentPosFromChunkPos(int x, int y, int z) const {
 	return Vector4i(x, y % CHUNK_SEGMENT_HEIGHT, z, y >> 4);
 }
 
-std::vector<Vector3i> Chunk::pop_modifications() {
-    std::vector<Vector3i> modifications;
-    std::swap(m_modifications, modifications);
-    return modifications;
+const std::vector<Vector3i>& Chunk::get_modifications() const {
+    return m_modifications;
+}
+
+void Chunk::pop_modifications() {
+    m_modifications.clear();
 }

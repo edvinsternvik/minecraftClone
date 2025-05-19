@@ -13,7 +13,7 @@ public:
     ChunkRenderData(const ChunkRenderData&) = delete;
     ~ChunkRenderData();
 	void generateChunkMesh(const Chunk* chunk);
-	void updateChunkMesh(const Chunk* chunk, int x, int y, int z);
+	void updateChunkMesh(const Chunk* chunk);
     void update_vertex_buffer();
 
 	inline unsigned int* getChunkSegmentData(int index) { return &chunkMesh[index][0][0]; }

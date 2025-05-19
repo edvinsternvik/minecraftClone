@@ -26,8 +26,10 @@ public:
 		return BlockManager::getBlock(blocks[segPos.w][segPos.x][segPos.y][segPos.z]);
 	}
 	void changeBlock(int x, int y, int z, BlockId blockId);
+    void block_update(int x, int y, int z);
 	Vector4i calculateSegmentPosFromChunkPos(int x, int y, int z) const;
-    std::vector<Vector3i> pop_modifications();
+    const std::vector<Vector3i>& get_modifications() const;
+    void pop_modifications();
 
 public:
 	const int chunkX, chunkZ;

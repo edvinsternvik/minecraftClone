@@ -2,6 +2,7 @@
 #include "../Application.h"
 #include "../world/World.h"
 #include "BlockModelData.h"
+#include <set>
 #include <unordered_set>
 
 ChunkRenderData::ChunkRenderData() : chunkMeshSize(0) {
@@ -73,13 +74,21 @@ void ChunkRenderData::generateChunkSegmentMesh(const Chunk* chunk, int index){
     }
 }
 
-void ChunkRenderData::updateChunkMesh(const Chunk* chunk, int x, int y, int z){
-    Vector4i segPos = chunk->calculateSegmentPosFromChunkPos(x, y, z);
-    generateChunkSegmentMesh(chunk, segPos.w);
+void ChunkRenderData::updateChunkMesh(const Chunk* chunk){
+    const std::vector<Vector3i>& modifications = chunk->get_modifications();
+    std::set<int> segment_updates;
 
-    int chunkSegmentY = y % CHUNK_SEGMENT_HEIGHT;
-    if(chunkSegmentY == 0 && segPos.w > 0) generateChunkSegmentMesh(chunk, segPos.w - 1);
-    if(chunkSegmentY == CHUNK_SEGMENT_HEIGHT - 1 && segPos.w < CHUNK_SEGMENTS - 1) generateChunkSegmentMesh(chunk, segPos.w + 1);
+    for(Vector3i pos : modifications) {
+        Vector4i segPos = chunk->calculateSegmentPosFromChunkPos(pos.x, pos.y, pos.z);
+
+        segment_updates.insert(segPos.w);
+        if(segPos.y == 0 && segPos.w > 0) segment_updates.insert(segPos.w - 1);
+        if(segPos.y == CHUNK_SEGMENT_HEIGHT - 1 && segPos.w < CHUNK_SEGMENTS - 1) segment_updates.insert(segPos.w + 1);
+    }
+
+    for(int segment : segment_updates) {
+        generateChunkSegmentMesh(chunk, segment);
+    }
 }
 
 void ChunkRenderData::update_vertex_buffer() {
@@ -117,13 +126,10 @@ void ChunkRenderer::prepare_chunks(const ChunkMap* chunks) {
         m_render_data.erase(chunk_coords);
     }
 
-
     std::unordered_set<Vector2i> updated_chunks;
     for(auto& chunk_it : *chunks) {
         Vector2i chunk_coords = chunk_it.first;
 	    const Chunk* chunk = chunk_it.second.get();
-
-        // auto modifications = chunk->pop_modifications();
 
         if(m_render_data.count(chunk_coords) == 0) {
             m_render_data[chunk_coords] = std::make_unique<ChunkRenderData>();
@@ -143,5 +149,13 @@ void ChunkRenderer::prepare_chunks(const ChunkMap* chunks) {
 
         chunk_render_data->second->generateChunkMesh(chunk->second.get());
         chunk_render_data->second->update_vertex_buffer();
+    }
+
+    for(auto& chunk : *chunks) {
+        if(chunk.second->get_modifications().empty()) continue;
+        auto search = m_render_data.find(chunk.first);
+        if(search == m_render_data.end()) continue;
+        search->second->updateChunkMesh(chunk.second.get());
+        search->second->update_vertex_buffer();
     }
 }

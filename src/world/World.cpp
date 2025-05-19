@@ -1,5 +1,6 @@
 #include "World.h"
 #include "../GameObject.h"
+#include "Chunk.h"
 
 World::World(unsigned int seed)
     : m_seed(seed), m_noiseGenerator() {
@@ -28,6 +29,7 @@ void World::update(float deltaTime) {
 }
 
 void World::update_chunks(int center_x, int center_z) {
+    for(auto& chunk : m_chunkMap) chunk.second->pop_modifications();
 	delete_distant_chunks(center_x, center_z);
 	generate_chunks_around(center_x, center_z);
 }
@@ -48,22 +50,22 @@ void World::changeBlock(int x, int y, int z, BlockId blockId) {
     Vector2i blockPosInChunk = getBlockPosInChunk(Vector2i(x, z));
 	chunk->changeBlock(blockPosInChunk.x, y, blockPosInChunk.y, blockId);
 
-	// if(blockPosInChunk.x == 0) {
-	// 	Chunk* otherChunk = getChunk(x - 1, z);
-	// 	if(otherChunk) otherChunk->getChunkRenderer()->updateChunkMesh(x, y, z);
-	// }
-	// if(blockPosInChunk.x == CHUNK_WIDTH - 1) {
-	// 	Chunk* otherChunk = getChunk(x + 1, z);
-	// 	if(otherChunk) otherChunk->getChunkRenderer()->updateChunkMesh(x, y, z);
-	// }
-	// if(blockPosInChunk.y == 0) {
-	// 	Chunk* otherChunk = getChunk(x, z - 1);
-	// 	if(otherChunk) otherChunk->getChunkRenderer()->updateChunkMesh(x, y, z);
-	// }
-	// if(blockPosInChunk.y == CHUNK_WIDTH - 1) {
-	// 	Chunk* otherChunk = getChunk(x, z + 1);
-	// 	if(otherChunk) otherChunk->getChunkRenderer()->updateChunkMesh(x, y, z);
-	// }
+	if(blockPosInChunk.x == 0) {
+		Chunk* otherChunk = getChunk(x - 1, z);
+        otherChunk->block_update(CHUNK_WIDTH - 1, y, blockPosInChunk.y);
+	}
+	if(blockPosInChunk.x == CHUNK_WIDTH - 1) {
+		Chunk* otherChunk = getChunk(x + 1, z);
+        otherChunk->block_update(0, y, blockPosInChunk.y);
+	}
+	if(blockPosInChunk.y == 0) {
+		Chunk* otherChunk = getChunk(x, z - 1);
+        otherChunk->block_update(blockPosInChunk.x, y, CHUNK_WIDTH - 1);
+	}
+	if(blockPosInChunk.y == CHUNK_WIDTH - 1) {
+		Chunk* otherChunk = getChunk(x, z + 1);
+        otherChunk->block_update(blockPosInChunk.x, y, 0);
+	}
 }
 
 bool World::isSolid(int x, int y, int z) {

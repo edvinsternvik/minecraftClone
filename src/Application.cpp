@@ -37,8 +37,8 @@ void Application::run() {
 	while (window->isOpen()) {
         std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
 
-        world->update(deltaTime);
         world->update_chunks(camera->getPosition().x, camera->getPosition().z);
+        world->update(deltaTime);
         physics->update(deltaTime, world.get());
         renderer->prepare_chunks(world.get());
 		renderer->render(world.get(), camera);
