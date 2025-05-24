@@ -12,7 +12,9 @@ const Block BlockManager::Blocks[BlockCount] {
     Block(BlockId::Grass, BlockType::Solid, {3,3,3,3,0,2} , 1.0f),
     Block(BlockId::Stone, BlockType::Solid, {1,1,1,1,1,1}, 1.0f),
     Block(BlockId::Dirt, BlockType::Solid, {2,2,2,2,2,2}, 2.0f),
-    Block(BlockId::Tallgrass, BlockType::Transparent, {4,4,4,4,4,4}, 0.0f)
+    Block(BlockId::Tallgrass, BlockType::Transparent, {4,4,4,4,4,4}, 0.0f),
+    Block(BlockId::Wood, BlockType::Solid, {5,5,5,5,6,6}, 1.0f),
+    Block(BlockId::Leaves, BlockType::Solid, {7,7,7,7,7,7}, 0.1f)
 };
 
 const Block& BlockManager::getBlock(const BlockId& blockId) {

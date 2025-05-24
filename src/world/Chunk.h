@@ -33,6 +33,10 @@ public:
     const std::vector<Vector3i>& get_modifications() const;
     void pop_modifications();
 
+private:
+    void set_block(int x, int y, int z, BlockId block);
+    void set_block_no_override(int x, int y, int z, BlockId block);
+
 public:
     const int chunkX, chunkZ;
 

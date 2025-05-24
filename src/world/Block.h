@@ -6,7 +6,7 @@ enum BlockSide {
 };
 
 enum BlockId {
-    Air, Grass, Stone, Dirt, Tallgrass
+    Air, Grass, Stone, Dirt, Tallgrass, Wood, Leaves
 };
 
 enum class BlockType {
@@ -35,6 +35,6 @@ public:
     static const Block& getBlock(const BlockId& blockId);
 
 public:
-    static const unsigned int BlockCount = 5;
+    static const unsigned int BlockCount = 7;
     static const Block Blocks[BlockCount];
 };
