@@ -61,24 +61,6 @@ Chunk::Chunk(int chunkX, int chunkZ, const PerlinNoise& noise_generator) : chunk
         }
     }
 
-    for(int x = 0; x < CHUNK_WIDTH; ++x) {
-        for(int z = 0; z < CHUNK_WIDTH; ++z) {
-            uint32_t grass_hash = hash_2d(
-                CHUNK_WIDTH * chunkX + x,
-                CHUNK_WIDTH * chunkZ + z,
-                GRASS_HASH_OFFSET
-            );
-            if(grass_hash % 10 != 0) continue;
-            int ground_height = calc_ground_height(
-                chunkX * CHUNK_WIDTH + x,
-                chunkZ * CHUNK_WIDTH + z,
-                noise_generator
-            );
-
-            set_block(x, ground_height + 1, z, BlockId::Tallgrass);
-        }
-    }
-
     for(int x = -2; x < CHUNK_WIDTH + 2; ++x) {
         for(int z = -2; z < CHUNK_WIDTH + 2; ++z) {
             uint32_t tree_hash = hash_2d(
@@ -103,6 +85,24 @@ Chunk::Chunk(int chunkX, int chunkZ, const PerlinNoise& noise_generator) : chunk
                     struct_block.block
                 );
             }
+        }
+    }
+
+    for(int x = 0; x < CHUNK_WIDTH; ++x) {
+        for(int z = 0; z < CHUNK_WIDTH; ++z) {
+            uint32_t grass_hash = hash_2d(
+                CHUNK_WIDTH * chunkX + x,
+                CHUNK_WIDTH * chunkZ + z,
+                GRASS_HASH_OFFSET
+            );
+            if(grass_hash % 10 != 0) continue;
+            int ground_height = calc_ground_height(
+                chunkX * CHUNK_WIDTH + x,
+                chunkZ * CHUNK_WIDTH + z,
+                noise_generator
+            );
+
+            set_block_no_override(x, ground_height + 1, z, BlockId::Tallgrass);
         }
     }
 
