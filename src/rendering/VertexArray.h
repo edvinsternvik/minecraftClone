@@ -2,12 +2,12 @@
 
 class VertexArray {
 public:
-	VertexArray();
-	~VertexArray();
+    VertexArray();
+    ~VertexArray();
 
-	void bind();
-	void unbind();
+    void bind();
+    void unbind();
 
 private:
-	unsigned int m_VertexArrayId;
+    unsigned int m_VertexArrayId;
 };

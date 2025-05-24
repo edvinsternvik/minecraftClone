@@ -4,8 +4,8 @@
 
 class Input {
 public:
-	static bool keyDown(int keycode);
-	static bool mouseKeyDown(int keycode);
-	static Vector2 mousePos();
-	static Vector2 deltaMouse();
+    static bool keyDown(int keycode);
+    static bool mouseKeyDown(int keycode);
+    static Vector2 mousePos();
+    static Vector2 deltaMouse();
 };

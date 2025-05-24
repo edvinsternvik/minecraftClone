@@ -4,13 +4,13 @@
 
 class Camera : public GameObject {
 public:
-	Camera();
+    Camera();
 
-	virtual void init() override;
-	virtual void update(float deltaTime) override;
+    virtual void init() override;
+    virtual void update(float deltaTime) override;
 
 public:
-	Vector2 mousePos;
-	glm::mat4 viewMatrix;
-	bool mouse1Pressed = false, mouse2Pressed = false;
+    Vector2 mousePos;
+    glm::mat4 viewMatrix;
+    bool mouse1Pressed = false, mouse2Pressed = false;
 };

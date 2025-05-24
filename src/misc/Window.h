@@ -4,15 +4,15 @@
 
 class Window {
 public:
-	Window();
-	~Window();
+    Window();
+    ~Window();
 
-	bool isOpen();
-	void swapBuffers();
-	void handleEvents();
+    bool isOpen();
+    void swapBuffers();
+    void handleEvents();
 
-	GLFWwindow* getNativeWindow() const { return window; }
+    GLFWwindow* getNativeWindow() const { return window; }
 
 private:
-	GLFWwindow* window;
+    GLFWwindow* window;
 };

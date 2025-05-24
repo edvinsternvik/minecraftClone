@@ -2,8 +2,8 @@
 #include <GL/glew.h>
 
 VertexArray::VertexArray() {
-	glGenVertexArrays(1, &m_VertexArrayId);
-	bind();
+    glGenVertexArrays(1, &m_VertexArrayId);
+    bind();
 }
 
 VertexArray::~VertexArray() {
@@ -11,9 +11,9 @@ VertexArray::~VertexArray() {
 }
 
 void VertexArray::bind() {
-	glBindVertexArray(m_VertexArrayId);
+    glBindVertexArray(m_VertexArrayId);
 }
 
 void VertexArray::unbind() {
-	glBindVertexArray(0);
+    glBindVertexArray(0);
 }

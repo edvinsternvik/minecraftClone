@@ -127,7 +127,7 @@ void ChunkRenderer::prepare_chunks(const ChunkMap* chunks) {
     std::unordered_set<Vector2i> updated_chunks;
     for(auto& chunk_it : *chunks) {
         Vector2i chunk_coords = chunk_it.first;
-	    const Chunk* chunk = chunk_it.second.get();
+        const Chunk* chunk = chunk_it.second.get();
 
         if(m_render_data.count(chunk_coords) == 0) {
             m_render_data[chunk_coords] = std::make_unique<ChunkRenderData>();

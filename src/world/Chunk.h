@@ -16,31 +16,31 @@ using ChunkID = Vector2i;
 
 class Chunk {
 public:
-	Chunk(int chunkX, int chunkZ, const PerlinNoise& noiseGenerator);
+    Chunk(int chunkX, int chunkZ, const PerlinNoise& noiseGenerator);
     Chunk(const Chunk&) = delete;
-	~Chunk();
+    ~Chunk();
     Chunk&  operator=(const Chunk&) = delete;
 
-	bool isSolid(int x, int y, int z) const;
+    bool isSolid(int x, int y, int z) const;
     std::optional<Block> get_block(int x, int y, int z) const;
-	inline const Block& getBlock(int x, int y, int z) const {
-		Vector4i segPos = calculateSegmentPosFromChunkPos(x, y, z);
-		return BlockManager::getBlock(blocks[segPos.w][segPos.x][segPos.y][segPos.z]);
-	}
-	void changeBlock(int x, int y, int z, BlockId blockId);
+    inline const Block& getBlock(int x, int y, int z) const {
+        Vector4i segPos = calculateSegmentPosFromChunkPos(x, y, z);
+        return BlockManager::getBlock(blocks[segPos.w][segPos.x][segPos.y][segPos.z]);
+    }
+    void changeBlock(int x, int y, int z, BlockId blockId);
     void block_update(int x, int y, int z);
-	Vector4i calculateSegmentPosFromChunkPos(int x, int y, int z) const;
+    Vector4i calculateSegmentPosFromChunkPos(int x, int y, int z) const;
     const std::vector<Vector3i>& get_modifications() const;
     void pop_modifications();
 
 public:
-	const int chunkX, chunkZ;
+    const int chunkX, chunkZ;
 
 private:
-	BlockId blocks[CHUNK_SEGMENTS][CHUNK_WIDTH][CHUNK_SEGMENT_HEIGHT][CHUNK_WIDTH];
+    BlockId blocks[CHUNK_SEGMENTS][CHUNK_WIDTH][CHUNK_SEGMENT_HEIGHT][CHUNK_WIDTH];
     std::vector<Vector3i> m_modifications;
 
-	friend class World;
+    friend class World;
 };
 
 using ChunkMap = std::unordered_map<Vector2i, std::unique_ptr<Chunk>>;

@@ -20,10 +20,10 @@ Application::~Application() {
 
 void Application::init() {
     window = std::make_unique<Window>();
-	renderer = std::make_unique<Renderer>();
+    renderer = std::make_unique<Renderer>();
     world = std::make_unique<World>(123456);
     physics = std::make_unique<Physics>();
-	camera = world->createGameObject<Camera>();
+    camera = world->createGameObject<Camera>();
 }
 
 
@@ -34,14 +34,14 @@ void Application::run() {
     int fps = 0;
     double timer = 0.0;
     float deltaTime = 0.0;
-	while (window->isOpen()) {
+    while (window->isOpen()) {
         std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
 
         world->update_chunks(camera->getPosition().x, camera->getPosition().z);
         world->update(deltaTime);
         physics->update(deltaTime, world.get());
         renderer->prepare_chunks(world.get());
-		renderer->render(world.get(), camera);
+        renderer->render(world.get(), camera);
 
         window->swapBuffers();
         window->handleEvents();

@@ -1,7 +1,7 @@
 #include "Window.h"
 
 Window::Window() {
-	if (!glfwInit())
+    if (!glfwInit())
         return;
 
     window = glfwCreateWindow(1280, 720, "MC", NULL, NULL);
@@ -12,22 +12,22 @@ Window::Window() {
 
     glfwMakeContextCurrent(window);
 
-	glfwSwapInterval(1);
+    glfwSwapInterval(1);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 Window::~Window() {
-	glfwTerminate();
+    glfwTerminate();
 }
 
 bool Window::isOpen() {
-	return !glfwWindowShouldClose(window);
+    return !glfwWindowShouldClose(window);
 }
 
 void Window::swapBuffers() {
-	glfwSwapBuffers(window);
+    glfwSwapBuffers(window);
 }
 
 void Window::handleEvents() {
-	glfwPollEvents();
+    glfwPollEvents();
 }

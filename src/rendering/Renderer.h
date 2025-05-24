@@ -9,14 +9,14 @@ class Camera;
 
 class Renderer {
 public:
-	Renderer();
+    Renderer();
 
-	void render(World* world, Camera* camera);
+    void render(World* world, Camera* camera);
     void prepare_chunks(World* world);
 
 private:
-	std::unique_ptr<Shader> shader;
+    std::unique_ptr<Shader> shader;
     std::unique_ptr<TextureAtlas> blockTextures;
     std::unique_ptr<ChunkRenderer> m_chunk_renderer;
-	unsigned int dataSize;
+    unsigned int dataSize;
 };

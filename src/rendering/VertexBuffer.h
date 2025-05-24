@@ -2,23 +2,23 @@
 
 class VertexBuffer {
 public:
-	VertexBuffer(const float* verticies, int verticiesCount, const int attributes[], int attributesCount);
-	VertexBuffer(const int attributes[], int attributesCount);
-	~VertexBuffer();
+    VertexBuffer(const float* verticies, int verticiesCount, const int attributes[], int attributesCount);
+    VertexBuffer(const int attributes[], int attributesCount);
+    ~VertexBuffer();
 
-	void addVertexAttribArray(int count);
+    void addVertexAttribArray(int count);
 
-	void bind();
-	void unbind();
+    void bind();
+    void unbind();
 
-	void setData(const unsigned int* verticies, int verticiesCount);
-	void setDataSize(int verticiesCount);
-	void setSubData(const unsigned int* verticies, int verticiesCount, int vertexOffset);
-
-private:
-	void init(const int attributes[], int attributesCount);
+    void setData(const unsigned int* verticies, int verticiesCount);
+    void setDataSize(int verticiesCount);
+    void setSubData(const unsigned int* verticies, int verticiesCount, int vertexOffset);
 
 private:
-	unsigned int m_vertexBufferId;
-	unsigned int m_attributesStride;
+    void init(const int attributes[], int attributesCount);
+
+private:
+    unsigned int m_vertexBufferId;
+    unsigned int m_attributesStride;
 };
