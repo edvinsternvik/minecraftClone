@@ -138,7 +138,7 @@ void Chunk::block_update(int x, int y, int z) {
     auto block = get_block(x, y, z);
     auto block_below = get_block(x, y - 1, z);
     if(block.has_value() && block->getBlockId() == BlockId::Tallgrass
-        && block_below.has_value() && block_below->getBlockType() == BlockType::Transparent) {
+        && block_below.has_value() && block_below->getBlockId() != BlockId::Grass) {
         changeBlock(x, y, z, BlockId::Air);
     }
 
@@ -150,7 +150,17 @@ bool Chunk::isSolid(int x, int y, int z) const {
         return false;
     }
 
-    return get_block(x, y, z)->getBlockType() == BlockType::Solid;
+    BlockType block_type = get_block(x, y, z)->getBlockType();
+    return block_type == BlockType::Opaque || block_type == BlockType::Transparent;
+}
+
+bool Chunk::isOpaque(int x, int y, int z) const {
+    if(x < 0 || x >= CHUNK_WIDTH || y < 0 || y >= CHUNK_HEIGHT || z < 0 || z >= CHUNK_WIDTH) {
+        return false;
+    }
+
+    BlockType block_type = get_block(x, y, z)->getBlockType();
+    return block_type == BlockType::Opaque;
 }
 
 std::optional<Block> Chunk::get_block(int x, int y, int z) const {

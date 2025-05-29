@@ -47,22 +47,35 @@ void ChunkRenderData::generateChunkSegmentMesh(const Chunk* chunk, int index){
                 const Block* block = &chunk->getBlock(x, y, z);
                 int worldX = x + chunkWorldX, worldZ = z + chunkWorldZ;
 
-                if(block->getBlockType() == BlockType::Solid) {
-
-                    if(!isSolid(x   , y    , z + 1, chunkWorldX, chunkWorldZ, chunk)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Front, Vector3(x, y, z), block->getBlockId()));
-                    if(!isSolid(x   , y    , z - 1, chunkWorldX, chunkWorldZ, chunk)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Back , Vector3(x, y, z), block->getBlockId()));
-                    if(!isSolid(x - 1,y    , z    , chunkWorldX, chunkWorldZ, chunk)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Left , Vector3(x, y, z), block->getBlockId()));
-                    if(!isSolid(x + 1,y    , z    , chunkWorldX, chunkWorldZ, chunk)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Right, Vector3(x, y, z), block->getBlockId()));
-                    if(!isSolid(x   , y + 1, z    , chunkWorldX, chunkWorldZ, chunk)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Top  , Vector3(x, y, z), block->getBlockId()));
-                    if(!isSolid(x   , y - 1, z    , chunkWorldX, chunkWorldZ, chunk)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Down , Vector3(x, y, z), block->getBlockId()));
+                BlockType block_type = block->getBlockType();
+                if(block_type == BlockType::Opaque) {
+                    if(!isOpaque(x   , y    , z + 1, chunkWorldX, chunkWorldZ, chunk)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Front, Vector3(x, y, z), block->getBlockId()));
+                    if(!isOpaque(x   , y    , z - 1, chunkWorldX, chunkWorldZ, chunk)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Back , Vector3(x, y, z), block->getBlockId()));
+                    if(!isOpaque(x - 1,y    , z    , chunkWorldX, chunkWorldZ, chunk)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Left , Vector3(x, y, z), block->getBlockId()));
+                    if(!isOpaque(x + 1,y    , z    , chunkWorldX, chunkWorldZ, chunk)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Right, Vector3(x, y, z), block->getBlockId()));
+                    if(!isOpaque(x   , y + 1, z    , chunkWorldX, chunkWorldZ, chunk)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Top  , Vector3(x, y, z), block->getBlockId()));
+                    if(!isOpaque(x   , y - 1, z    , chunkWorldX, chunkWorldZ, chunk)) segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Down , Vector3(x, y, z), block->getBlockId()));
                 }
-                else if(block->getBlockType() == BlockType::Transparent) {
-                    if(block->getBlockId() == BlockId::Tallgrass) {
-                        segmentMesh->push_back(BlockModelData::getFoliageData(BlockSide::Front, Vector3(x, y, z), block->getBlockId()));
-                        segmentMesh->push_back(BlockModelData::getFoliageData(BlockSide::Right, Vector3(x, y, z), block->getBlockId()));
-                        segmentMesh->push_back(BlockModelData::getFoliageData(BlockSide::Back, Vector3(x, y, z), block->getBlockId()));
-                        segmentMesh->push_back(BlockModelData::getFoliageData(BlockSide::Left, Vector3(x, y, z), block->getBlockId()));
+                else if(block_type == BlockType::Transparent) {
+                    if(!isOpaque(x   , y    , z + 1, chunkWorldX, chunkWorldZ, chunk)
+                        || !isOpaque(x   , y    , z - 1, chunkWorldX, chunkWorldZ, chunk)
+                        || !isOpaque(x - 1,y    , z    , chunkWorldX, chunkWorldZ, chunk)
+                        || !isOpaque(x + 1,y    , z    , chunkWorldX, chunkWorldZ, chunk)
+                        || !isOpaque(x   , y + 1, z    , chunkWorldX, chunkWorldZ, chunk)
+                        || !isOpaque(x   , y - 1, z    , chunkWorldX, chunkWorldZ, chunk)) {
+                        segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Front, Vector3(x, y, z), block->getBlockId()));
+                        segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Back , Vector3(x, y, z), block->getBlockId()));
+                        segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Left , Vector3(x, y, z), block->getBlockId()));
+                        segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Right, Vector3(x, y, z), block->getBlockId()));
+                        segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Top  , Vector3(x, y, z), block->getBlockId()));
+                        segmentMesh->push_back(BlockModelData::getBlockData(BlockSide::Down , Vector3(x, y, z), block->getBlockId()));
                     }
+                }
+                else if(block_type == BlockType::Foliage) {
+                    segmentMesh->push_back(BlockModelData::getFoliageData(BlockSide::Front, Vector3(x, y, z), block->getBlockId()));
+                    segmentMesh->push_back(BlockModelData::getFoliageData(BlockSide::Right, Vector3(x, y, z), block->getBlockId()));
+                    segmentMesh->push_back(BlockModelData::getFoliageData(BlockSide::Back, Vector3(x, y, z), block->getBlockId()));
+                    segmentMesh->push_back(BlockModelData::getFoliageData(BlockSide::Left, Vector3(x, y, z), block->getBlockId()));
                 }
             }
         }
@@ -112,6 +125,14 @@ bool ChunkRenderData::isSolid(const int& localX, const int& y, const int& localZ
         return world->isSolid(localX + chunkWorldX, y, localZ + chunkWorldY);
     }
     return chunk->isSolid(localX, y, localZ);
+}
+
+bool ChunkRenderData::isOpaque(const int& localX, const int& y, const int& localZ, const int& chunkWorldX, const int& chunkWorldY, const Chunk* chunk) {
+    if(localX < 0 || localX > 15 || localZ < 0 || localZ > 15) {
+        World* world = Application::getInstance().getWorld();
+        return world->isOpaque(localX + chunkWorldX, y, localZ + chunkWorldY);
+    }
+    return chunk->isOpaque(localX, y, localZ);
 }
 
 

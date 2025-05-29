@@ -30,6 +30,7 @@ public:
     const unsigned int& getSeed() const { return m_seed; }
     void changeBlock(int x, int y, int z, BlockId blockId);
     bool isSolid(int x, int y, int z);
+    bool isOpaque(int x, int y, int z);
     Vector2i getWorldPos(Vector2i chunkPos);
     Vector2i getChunkPos(Vector2i worldPos);
     Vector2i getBlockPosInChunk(Vector2i worldPos);

@@ -22,6 +22,7 @@ public:
     Chunk&  operator=(const Chunk&) = delete;
 
     bool isSolid(int x, int y, int z) const;
+    bool isOpaque(int x, int y, int z) const;
     std::optional<Block> get_block(int x, int y, int z) const;
     inline const Block& getBlock(int x, int y, int z) const {
         Vector4i segPos = calculateSegmentPosFromChunkPos(x, y, z);

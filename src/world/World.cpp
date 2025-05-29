@@ -78,6 +78,14 @@ bool World::isSolid(int x, int y, int z) {
     return chunk->isSolid(blockPosInChunk.x, y, blockPosInChunk.y);
 }
 
+bool World::isOpaque(int x, int y, int z) {
+    Chunk* chunk = getChunk(x, z);
+    if(chunk == nullptr) return true;
+
+    Vector2i chunk_block_pos = getBlockPosInChunk(Vector2i(x, z));
+    return chunk->isOpaque(chunk_block_pos.x, y, chunk_block_pos.y);
+}
+
 Vector2i World::getWorldPos(Vector2i chunkPos) {
     static_assert(CHUNK_WIDTH == 16, "World::getWorldPos() assumes that CHUNK_WIDTH == 16");
     return Vector2i(chunkPos.x << 4, chunkPos.y << 4);

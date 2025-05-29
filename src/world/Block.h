@@ -10,7 +10,10 @@ enum BlockId {
 };
 
 enum class BlockType {
-    Transparent, Solid
+    None,
+    Opaque,
+    Transparent,
+    Foliage,
 };
 
 class Block {

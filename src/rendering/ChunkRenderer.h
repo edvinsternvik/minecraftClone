@@ -20,6 +20,7 @@ public:
     inline int getChunkSegmentMeshVerticiesCount(int index) const { return chunkMesh[index].size() * 6; }
     inline int getChunkMeshVerticiesCount() const { return chunkMeshSize; }
     bool isSolid(const int& localX, const int& y, const int& localZ, const int& chunkWorldX, const int& chunkWorldY, const Chunk* chunk);
+    bool isOpaque(const int& localX, const int& y, const int& localZ, const int& chunkWorldX, const int& chunkWorldY, const Chunk* chunk);
 
     void bind();
 
