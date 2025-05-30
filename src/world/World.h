@@ -26,14 +26,14 @@ public:
         return dynamic_cast<T*>(gameObjects.back().get());
     }
 
-    const Block* const getBlock(int x, int y, int z);
+    const Block* const getBlock(int x, int y, int z) const;
     const unsigned int& getSeed() const { return m_seed; }
     void changeBlock(int x, int y, int z, BlockId blockId);
-    bool isSolid(int x, int y, int z);
-    bool isOpaque(int x, int y, int z);
-    Vector2i getWorldPos(Vector2i chunkPos);
-    Vector2i getChunkPos(Vector2i worldPos);
-    Vector2i getBlockPosInChunk(Vector2i worldPos);
+    bool isSolid(int x, int y, int z) const;
+    bool isOpaque(int x, int y, int z) const;
+    Vector2i getWorldPos(Vector2i chunkPos) const;
+    Vector2i getChunkPos(Vector2i worldPos) const;
+    Vector2i getBlockPosInChunk(Vector2i worldPos) const;
 
     Chunk* createChunk(int x, int y);
 
@@ -52,6 +52,7 @@ public:
 
 private:
     Chunk* getChunk(int worldX, int worldZ);
+    const Chunk* getChunk(int worldX, int worldZ) const;
     void generate_chunks_around(int center_x, int center_z);
     void delete_distant_chunks(int center_x, int center_z);
 

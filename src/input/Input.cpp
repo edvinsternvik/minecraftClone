@@ -5,7 +5,7 @@
 bool Input::keyDown(int keycode) {
     auto window = Application::getInstance().getWindow()->getNativeWindow();
     auto keystate = glfwGetKey(window, keycode);
-    return keystate == GLFW_PRESS || keystate == GLFW_REPEAT;
+    return keystate == GLFW_PRESS;
 }
 
 bool Input::mouseKeyDown(int keycode) {

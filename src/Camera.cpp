@@ -6,13 +6,14 @@
 #include "world/World.h"
 
 Camera::Camera() {
-    colliderSize = Vector3(0.8, 1.8, 0.8);
+    collider_min = Vector3(-0.4, -1.62, -0.4);
+    collider_max = Vector3(0.4, 0.23, 0.4);
 }
 
 void Camera::init() {
     localVelocity.z = 0.0;
     mousePos = Input::mousePos();
-    localPosition = Vector3(3.5, 96.0, 4.5);
+    localPosition = Vector3(3.5, 64.0, 4.5);
     localRotation = Vector3(0.0, 0.0, 0.0);
 }
 
@@ -74,7 +75,7 @@ void Camera::update(float deltaTime) {
     viewMatrix = glm::rotate(viewMatrix, dirRad, glm::vec3(0.0, 1.0, 0.0));
     viewMatrix = glm::rotate(viewMatrix, glm::radians(rotation.z), glm::vec3(0.0, 0.0, 1.0));
 
-    viewMatrix = glm::translate(viewMatrix, - glm::vec3(position.x, position.y + colliderSize.y * 0.4, position.z));
+    viewMatrix = glm::translate(viewMatrix, - glm::vec3(position.x, position.y, position.z));
 
     if(Input::mouseKeyDown(MOUSE_KEY_LEFT)) {
         if(!mouse1Pressed) {
@@ -83,7 +84,7 @@ void Camera::update(float deltaTime) {
             direction.z = std::sin(glm::radians(rotation.y - 90.0)) * std::cos(glm::radians(rotation.x));
             direction.y = -std::sin(glm::radians(rotation.x));
 
-            Raycast ray(Vector3(position.x, position.y + colliderSize.y * 0.4, position.z), direction, 4.0);
+            Raycast ray(Vector3(position.x, position.y, position.z), direction, 4.0);
             if(ray.hit) {
                 Application::getInstance().getWorld()->changeBlock(std::floor(ray.hitPosition.x), std::floor(ray.hitPosition.y), std::floor(ray.hitPosition.z), BlockId::Air);
             }
@@ -101,7 +102,7 @@ void Camera::update(float deltaTime) {
             direction.z = std::sin(glm::radians(rotation.y - 90.0)) * std::cos(glm::radians(rotation.x));
             direction.y = -std::sin(glm::radians(rotation.x));
 
-            Raycast ray(Vector3(position.x, position.y + colliderSize.y * 0.4, position.z), direction, 4.0);
+            Raycast ray(Vector3(position.x, position.y, position.z), direction, 4.0);
             if(ray.hit) {
                 Vector3 newPos = ray.hitPosition - direction * 0.1;
                 Application::getInstance().getWorld()->changeBlock(std::floor(newPos.x), std::floor(newPos.y), std::floor(newPos.z), BlockId::Stone);

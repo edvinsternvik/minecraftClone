@@ -34,8 +34,8 @@ void World::update_chunks(int center_x, int center_z) {
     generate_chunks_around(center_x, center_z);
 }
 
-const Block* const World::getBlock(int x, int y, int z) {
-    Chunk* chunk = getChunk(x, z);
+const Block* const World::getBlock(int x, int y, int z) const {
+    const Chunk* chunk = getChunk(x, z);
     if(chunk == nullptr) return nullptr;
 
     return &chunk->getBlock(x, y, z);
@@ -68,8 +68,8 @@ void World::changeBlock(int x, int y, int z, BlockId blockId) {
     }
 }
 
-bool World::isSolid(int x, int y, int z) {
-    Chunk* chunk = getChunk(x, z);
+bool World::isSolid(int x, int y, int z) const {
+    const Chunk* chunk = getChunk(x, z);
     if(chunk == nullptr) {
         return true;
     }
@@ -78,25 +78,25 @@ bool World::isSolid(int x, int y, int z) {
     return chunk->isSolid(blockPosInChunk.x, y, blockPosInChunk.y);
 }
 
-bool World::isOpaque(int x, int y, int z) {
-    Chunk* chunk = getChunk(x, z);
+bool World::isOpaque(int x, int y, int z) const {
+    const Chunk* chunk = getChunk(x, z);
     if(chunk == nullptr) return true;
 
     Vector2i chunk_block_pos = getBlockPosInChunk(Vector2i(x, z));
     return chunk->isOpaque(chunk_block_pos.x, y, chunk_block_pos.y);
 }
 
-Vector2i World::getWorldPos(Vector2i chunkPos) {
+Vector2i World::getWorldPos(Vector2i chunkPos) const {
     static_assert(CHUNK_WIDTH == 16, "World::getWorldPos() assumes that CHUNK_WIDTH == 16");
     return Vector2i(chunkPos.x << 4, chunkPos.y << 4);
 }
 
-Vector2i World::getChunkPos(Vector2i worldPos) {
+Vector2i World::getChunkPos(Vector2i worldPos) const {
     static_assert(CHUNK_WIDTH == 16, "World::getChunkPos() assumes that CHUNK_WIDTH == 16");
     return Vector2i(worldPos.x >> 4, worldPos.y >> 4);
 }
 
-Vector2i World::getBlockPosInChunk(Vector2i worldPos) {
+Vector2i World::getBlockPosInChunk(Vector2i worldPos) const {
     Vector2i res;
     res.x = worldPos.x % CHUNK_WIDTH;
     res.y = worldPos.y % CHUNK_WIDTH;
@@ -112,6 +112,15 @@ Chunk* World::createChunk(int x, int y) {
 }
 
 Chunk* World::getChunk(int worldX, int worldZ) {
+    Vector2i chunkPos = getChunkPos(Vector2i(worldX, worldZ));
+
+    auto search = m_chunkMap.find(chunkPos);
+    if(search == m_chunkMap.end()) return nullptr;
+
+    return search->second.get();
+}
+
+const Chunk* World::getChunk(int worldX, int worldZ) const {
     Vector2i chunkPos = getChunkPos(Vector2i(worldX, worldZ));
 
     auto search = m_chunkMap.find(chunkPos);

@@ -23,6 +23,6 @@ public:
 
 public:
     Vector3 localPosition, localRotation, localScale, localVelocity;
-    Vector3 colliderSize;
+    Vector3 collider_min, collider_max;
     bool isGrounded = false;
 };
